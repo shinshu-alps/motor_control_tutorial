@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>cpp_pubsub</name>
+  <name>motor_control</name>
   <version>0.0.0</version>
-  <description>Examples of minimal publisher/subscriber using rclcpp</description>
-  <maintainer email="you@email.com">Your Name</maintainer>
-  <license>Apache License 2.0</license>
+  <description>TODO: Package description</description>
+  <maintainer email="21t4064b@shinshu-u.ac.jp">njz</maintainer>
+  <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
   <depend>rclcpp</depend>
-  <depend>std_msgs</depend>
+  <depend>alps_lib</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
