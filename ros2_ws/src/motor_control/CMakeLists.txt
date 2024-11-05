@@ -8,14 +8,15 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(alps_lib REQUIRED)
+find_package(motor_control_interfaces REQUIRED)
 
 # CANとROSの中継ノード
 add_executable(can_ros_bridge src/can_ros_bridge.cpp)
-ament_target_dependencies(can_ros_bridge rclcpp alps_lib)
+ament_target_dependencies(can_ros_bridge rclcpp alps_lib motor_control_interfaces)
 
 # 角度制御ノード
 add_executable(angle_control src/angle_control.cpp)
-ament_target_dependencies(angle_control rclcpp alps_lib)
+ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces)
 
 install(TARGETS
   can_ros_bridge

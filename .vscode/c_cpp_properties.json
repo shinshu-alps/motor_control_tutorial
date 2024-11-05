@@ -8,8 +8,7 @@
                 "/opt/ros/humble/include/**",
                 "/opt/ros/humble/src/**",
                 "${workspaceFolder}/alps_core/lib_internal/**",
-                "${workspaceFolder}/alps_core/lib_external/**",
-                "${workspaceFolder}/ros2_ws/src/sample_ros2_pkgs/sample_alps_lib/include"
+                "${workspaceFolder}/alps_core/lib_external/**"
             ],
             "defines": [
                 "ETL_NO_PROFILE_HEADER"
