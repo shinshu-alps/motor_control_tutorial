@@ -1,7 +1,7 @@
-# alps_dev_base
+# motor_control_tutorial
 
-[![ROS2 Build & Test](https://github.com/shinshu-alps/alps_dev_base/actions/workflows/ros2_build_and_test.yml/badge.svg)](https://github.com/shinshu-alps/alps_dev_base/actions/workflows/ros2_build_and_test.yml)
-[![PIO Build](https://github.com/shinshu-alps/alps_dev_base/actions/workflows/pio_build.yml/badge.svg)](https://github.com/shinshu-alps/alps_dev_base/actions/workflows/pio_build.yml)
+[![ROS2 Build & Test](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/ros2_build_and_test.yml/badge.svg)](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/ros2_build_and_test.yml)
+[![PIO Build](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/pio_build.yml/badge.svg)](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/pio_build.yml)
 
 ロボ研の基本開発環境  
 運用については以下のesa記事参照
@@ -12,13 +12,13 @@
 sshでクローンする．またサブモジュールを含めるため`--recurse-submodules`オプションを付ける．
 
 ```bash
-git clone --recurse-submodules git@github.com:shinshu-alps/alps_dev_base.git
+git clone --recurse-submodules git@github.com:shinshu-alps/motor_control_tutorial.git
 ```
 
 ## ディレクトリ構成
 
 ```tree
-alps_dev_base/
+motor_control_tutorial/
 ├── README.md                           - このファイル
 │
 ├── .clang-format                       - C++フォーマット設定
@@ -32,7 +32,7 @@ alps_dev_base/
 │   ├── c_cpp_properties.json           - VSCode C/C++設定
 │   └── extensions.json                 - VSCode推奨拡張機能
 │
-├── alps_dev_base.code-workspace        - VSCodeワークスペース設定
+├── motor_control_tutorial.code-workspace        - VSCodeワークスペース設定
 │
 ├── alps_core                           - ソフト共通リソース（submodule）
 │
