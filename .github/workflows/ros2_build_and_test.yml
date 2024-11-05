@@ -1,0 +1,94 @@
+# ROS2のビルドとテストを行うGitHub Actionsワークフロー
+# 参考: [GitHub ActionsでROS 2のビルド・テストを自動化する](https://zenn.dev/tasada038/articles/5fd79d65523d42)
+
+name: ROS2 Build & Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ros2_ws/**'
+      - 'alps_core/**'
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'ros2_ws/**'
+      - 'alps_core/**'
+
+jobs:
+  build_and_test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+        rosdistro:
+          - humble
+          
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:${{ matrix.rosdistro }}-ros-base
+      
+    steps:
+      # safe.directoryの設定
+      - name: Set up a Git safe directory
+        run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+
+      # sshをインストール
+      - name: ssh install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client
+
+      # リポジトリをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          submodules: recursive
+          
+      # 依存関係のインストール
+      - name: Install dependencies
+        run: |
+          rosdep update && 
+          apt-get update && 
+          rosdep install --from-path . -i -y --rosdistro ${{ matrix.rosdistro }}
+        working-directory: ./ros2_ws
+        
+      # ビルド
+      - name: Build tests
+        id: build_test
+        run: |
+          . /opt/ros/${{ matrix.rosdistro }}/setup.sh && 
+          colcon build --symlink-install --executor sequential
+        continue-on-error: true
+        working-directory: ./ros2_ws
+
+      - name: build_test command success
+        if: steps.build_test.outcome == 'success'
+        run: echo "result - success"
+
+      - name: build_test command failure
+        if: steps.build_test.outcome == 'failure'
+        run: echo "result - failure" && exit 1
+
+      # テスト
+      - name: Run tests
+        id: run_test
+        run: |
+          . /opt/ros/${{ matrix.rosdistro }}/setup.sh &&
+          colcon test && 
+          colcon test-result
+        continue-on-error: true
+        working-directory: ./ros2_ws
+
+      - name: run_test command success
+        if: steps.run_test.outcome == 'success'
+        run: echo "result - success"
+
+      - name: run_test command failure
+        if: steps.run_test.outcome == 'failure'
+        run: echo "result - failure" && exit 1

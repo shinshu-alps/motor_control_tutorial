@@ -1,0 +1,3 @@
+[submodule "alps_core"]
+	path = alps_core
+	url = git@github.com:shinshu-alps/alps_core.git

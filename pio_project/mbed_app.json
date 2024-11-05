@@ -1,0 +1,14 @@
+{
+    "requires": [
+        "bare-metal"
+    ],
+    "macros": [ "ALPS_MBED_COMPILATION" ],
+    "target_overrides": {
+        "*": {
+            "target.console-uart": true,
+            "platform.minimal-printf-enable-floating-point": true,
+            "platform.minimal-printf-set-floating-point-max-decimals": 3,
+            "platform.stdio-baud-rate": 115200
+        }
+    }
+}

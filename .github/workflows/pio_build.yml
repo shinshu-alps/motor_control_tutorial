@@ -1,0 +1,54 @@
+# PlatformIOのビルドを行うGitHub Actionsワークフロー
+# 参考: [GitHub Actions — PlatformIO latest documentation](https://docs.platformio.org/en/latest/integration/ci/github-actions.html)
+
+name: PIO Build
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pio_project/**'
+      - 'alps_core/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'pio_project/**'
+      - 'alps_core/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      # リポジトリのチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          submodules: recursive
+
+      # PlatformIOのキャッシュを設定
+      - name: Cache PlatformIO
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      # Pythonのセットアップ
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+        
+      # PlatformIOのインストール
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      # PlatformIOのビルド
+      - name: Build PlatformIO Project
+        run: pio run
+        working-directory: ./pio_project

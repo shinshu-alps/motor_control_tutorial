@@ -1,0 +1,10 @@
+**/build
+**/install
+**/log
+
+.vscode/*
+!.vscode/c_cpp_properties.json
+!.vscode/extensions.json
+
+*.pyc
+__pycache__/

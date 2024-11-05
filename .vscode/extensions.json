@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools-extension-pack",
+        "platformio.platformio-ide",
+        "mhutchie.git-graph",
+        "ms-vsliveshare.vsliveshare",
+        "hediet.vscode-drawio",
+        "ms-vscode.vscode-serial-monitor",
+        "alexnesnes.teleplot",
+        "ms-vscode-remote.remote-ssh",
+        "cschlosser.doxdocgen",
+        "yzhang.markdown-all-in-one",
+        "maximus136.change-string-case",
+        "matepek.vscode-catch2-test-adapter",
+        "ms-python.black-formatter"
+    ]
+}
