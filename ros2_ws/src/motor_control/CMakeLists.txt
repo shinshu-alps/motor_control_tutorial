@@ -13,8 +13,13 @@ find_package(alps_lib REQUIRED)
 add_executable(can_ros_bridge src/can_ros_bridge.cpp)
 ament_target_dependencies(can_ros_bridge rclcpp alps_lib)
 
+# 角度制御ノード
+add_executable(angle_control src/angle_control.cpp)
+ament_target_dependencies(angle_control rclcpp alps_lib)
+
 install(TARGETS
   can_ros_bridge
+  angle_control
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
