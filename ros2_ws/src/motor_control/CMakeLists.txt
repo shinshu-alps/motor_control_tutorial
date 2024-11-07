@@ -12,6 +12,9 @@ find_package(motor_control_interfaces REQUIRED)
 
 # CANとROSの中継ノード
 add_executable(can_ros_bridge src/can_ros_bridge.cpp)
+target_include_directories(can_ros_bridge PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(can_ros_bridge rclcpp alps_lib motor_control_interfaces)
 
 # 角度制御ノード

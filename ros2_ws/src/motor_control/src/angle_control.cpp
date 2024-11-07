@@ -40,7 +40,6 @@ public:
 private:
   void CbTimer()
   {
-    msg_target_angle_.target_angle = key_input_thread_.GetInputVal();
     pub_target_angle_->publish(msg_target_angle_);
   }
 
@@ -58,11 +57,10 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::TimerBase::SharedPtr timer_input_;
   motor_control_interfaces::msg::TargetAngle msg_target_angle_;
-  KeyInputThread key_input_thread_{*this, "Target Angle [deg]"};
   rclcpp::Publisher<motor_control_interfaces::msg::TargetAngle>::SharedPtr pub_target_angle_;
   alps::ros2::util::TypedParamServer<double> param_target_angle_{*this, "target_angle_deg"};
   alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_controller_{
-    *this, "angle_controller"};
+    *this, "angle_controller_param"};
 };
 
 int main(int argc, char ** argv)
