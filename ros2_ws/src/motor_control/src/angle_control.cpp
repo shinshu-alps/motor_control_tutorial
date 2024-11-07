@@ -1,8 +1,6 @@
-#include <iostream>
-#include <mutex>
-
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
 #include "alps_ros2/util/typed_param.hpp"
+#include "motor_control/key_input_thread.hpp"
 #include "motor_control_interfaces/msg/target_angle.hpp"
 
 using namespace std::chrono_literals;
@@ -33,47 +31,20 @@ public:
           value.diff_lpf_time_const.count());
       });
 
-    // 入力スレッドの開始
-    std::thread input_thread(&AngleControl::InputThread, this);
-    input_thread.detach();
-
     RCLCPP_INFO(this->get_logger(), "Start AngleControl");
   }
 
   void CbTimer()
   {
-    std::lock_guard<std::mutex> lock(mtx_target_angle_);
+    msg_target_angle_.target_angle = key_input_thread_.GetInputVal();
     pub_target_angle_->publish(msg_target_angle_);
-  }
-
-  void InputThread()
-  {
-    rclcpp::sleep_for(1s);
-    auto rate = rclcpp::Rate(100ms);
-    while (rclcpp::ok()) {
-      std::cout << "Enter Target Angle [deg]: ";
-      double target_angle;
-      if (!(std::cin >> target_angle)) {
-        RCLCPP_ERROR(this->get_logger(), "Invalid input");
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        continue;
-      }
-
-      {  // 目標値セット
-        std::lock_guard<std::mutex> lock(mtx_target_angle_);
-        msg_target_angle_.target_angle = target_angle;
-      }
-
-      rate.sleep();
-    }
   }
 
 private:
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::TimerBase::SharedPtr timer_input_;
   motor_control_interfaces::msg::TargetAngle msg_target_angle_;
-  std::mutex mtx_target_angle_;
+  KeyInputThread key_input_thread_{*this, "Target Angle [deg]"};
   rclcpp::Publisher<motor_control_interfaces::msg::TargetAngle>::SharedPtr pub_target_angle_;
   alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_controller_{
     *this, "angle_controller"};

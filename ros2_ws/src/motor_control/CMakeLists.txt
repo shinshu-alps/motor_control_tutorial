@@ -16,6 +16,9 @@ ament_target_dependencies(can_ros_bridge rclcpp alps_lib motor_control_interface
 
 # 角度制御ノード
 add_executable(angle_control src/angle_control.cpp)
+target_include_directories(angle_control PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces)
 
 install(TARGETS
