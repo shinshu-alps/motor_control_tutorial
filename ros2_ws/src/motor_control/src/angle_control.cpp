@@ -1,3 +1,4 @@
+#include "alps_cmn/util/angle.hpp"
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
 #include "alps_ros2/util/typed_param.hpp"
 #include "motor_control/key_input_thread.hpp"
@@ -30,22 +31,36 @@ public:
           value.kd,
           value.diff_lpf_time_const.count());
       });
+    param_target_angle_.RegisterOnChangeCallback(
+      [this](const double & value) { CbTargetChanged(value); });
 
     RCLCPP_INFO(this->get_logger(), "Start AngleControl");
   }
 
+private:
   void CbTimer()
   {
     msg_target_angle_.target_angle = key_input_thread_.GetInputVal();
     pub_target_angle_->publish(msg_target_angle_);
   }
 
-private:
+  void CbTargetChanged(const double & target_angle_deg)
+  {
+    double target_angle_rad = alps::cmn::util::DegToRad(target_angle_deg);
+    RCLCPP_INFO(
+      this->get_logger(),
+      "target_angle: %f [deg] (= %f [rad])",
+      target_angle_deg,
+      target_angle_rad);
+    msg_target_angle_.target_angle = target_angle_rad;
+  }
+
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::TimerBase::SharedPtr timer_input_;
   motor_control_interfaces::msg::TargetAngle msg_target_angle_;
   KeyInputThread key_input_thread_{*this, "Target Angle [deg]"};
   rclcpp::Publisher<motor_control_interfaces::msg::TargetAngle>::SharedPtr pub_target_angle_;
+  alps::ros2::util::TypedParamServer<double> param_target_angle_{*this, "target_angle_deg"};
   alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_controller_{
     *this, "angle_controller"};
 };

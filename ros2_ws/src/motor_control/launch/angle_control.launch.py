@@ -14,5 +14,9 @@ def generate_launch_description():
                 executable="angle_control",
                 output="screen",
             ),
+            launch_ros.actions.Node(
+                package="rig_reconfigure",
+                executable="rig_reconfigure",
+            ),
         ]
     )
