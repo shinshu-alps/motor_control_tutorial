@@ -1,11 +1,12 @@
+> [!NOTE]
+> 整備中．．．
+
 # motor_control_tutorial
 
 [![ROS2 Build & Test](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/ros2_build_and_test.yml/badge.svg)](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/ros2_build_and_test.yml)
 [![PIO Build](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/pio_build.yml/badge.svg)](https://github.com/shinshu-alps/motor_control_tutorial/actions/workflows/pio_build.yml)
 
-ロボ研の基本開発環境  
-運用については以下のesa記事参照
-> [ロボ研での基本開発環境 - roblab-shinshu.esa.io](https://roblab-shinshu.esa.io/posts/2093)
+モーター制御チュートリアル用リポジトリ  
 
 ## クローン
 

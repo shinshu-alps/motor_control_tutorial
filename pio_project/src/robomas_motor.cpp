@@ -78,9 +78,6 @@ private:
 
 int main()
 {
-  // クロックの設定
-  ::mbed::HighResClock::lock();
-
   // ロボマスモーター用CAN
   alps::mbed::communication::BufferedCanIo<> robomas_can{
     RobomasBoard::kCan2Rd, RobomasBoard::kCan2Td, 300us};
@@ -182,6 +179,7 @@ int main()
     cb_angle_velocity_controller_param};
 
   // 時刻管理
+  ::mbed::HighResClock::lock();
   RateSleeper main_loop_rate{20ms};
   RateFuncInvoker<::mbed::HighResClock> param_update_rate{500ms};
 
