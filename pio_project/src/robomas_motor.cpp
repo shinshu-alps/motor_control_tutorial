@@ -25,6 +25,57 @@ using CanPublisher = alps::cmn::communication::CanPublisher<T>;
 template <class T>
 using CanParamClient = alps::cmn::communication::CanParamClient<T>;
 
+class RateSleeper
+{
+public:
+  explicit RateSleeper(std::chrono::milliseconds period) : period_{period}
+  {
+    next_time_ = Kernel::Clock::now() + period_;
+  }
+
+  void Sleep()
+  {
+    auto now = Kernel::Clock::now();
+    if (now < next_time_) {
+      ThisThread::sleep_until(next_time_);
+    } else {
+      ALPS_LOG_WARN("Processing has not been completed in execution cycle.");
+      while (next_time_ < Kernel::Clock::now()) {
+        next_time_ += period_;
+      }
+    }
+    next_time_ += period_;
+  }
+
+private:
+  std::chrono::milliseconds period_;
+  rtos::Kernel::Clock::time_point next_time_;
+};
+
+template <class Clock>
+class RateFuncInvoker
+{
+public:
+  explicit RateFuncInvoker(std::chrono::milliseconds period) : period_{period}
+  {
+    next_time_ = Clock::now() + period_;
+  }
+
+  template <class Func>
+  void Invoke(Func && func)
+  {
+    auto now = Clock::now();
+    if (next_time_ < now) {
+      func();
+      next_time_ = now + period_;
+    }
+  }
+
+private:
+  std::chrono::milliseconds period_;
+  typename Clock::time_point next_time_;
+};
+
 int main()
 {
   // クロックの設定
@@ -130,11 +181,16 @@ int main()
     can_map::kIdAngleVelocityControllerParam,
     cb_angle_velocity_controller_param};
 
+  // 時刻管理
+  RateSleeper main_loop_rate{20ms};
+  RateFuncInvoker<::mbed::HighResClock> param_update_rate{500ms};
+
+  // メインループ
   while (true) {
     // CAN受信データ処理
     pc_mcu_transceiver.ReadUpdate();
     robomas_transceiver.ReadUpdate();
-    can_param_port.Update();
+    param_update_rate.Invoke([&]() { can_param_port.Update(); });
 
     // Enable監視
     if (false
@@ -167,7 +223,8 @@ int main()
     // モーターの出力値をCAN通信で送信
     can_port.PublishMotorOutput();
 
-    ThisThread::sleep_for(20ms);
+    // ::rtos::ThisThread::sleep_for(20ms);
+    main_loop_rate.Sleep();
   }
 }
 
