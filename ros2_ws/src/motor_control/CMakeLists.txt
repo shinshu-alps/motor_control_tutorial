@@ -7,6 +7,9 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(alps_lib REQUIRED)
 find_package(motor_control_interfaces REQUIRED)
 
@@ -17,6 +20,13 @@ target_include_directories(can_ros_bridge PUBLIC
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(can_ros_bridge rclcpp alps_lib motor_control_interfaces)
 
+# モーターのシミュレーション
+add_executable(sim_motor src/sim_motor.cpp)
+target_include_directories(sim_motor PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(sim_motor rclcpp tf2 tf2_geometry_msgs visualization_msgs alps_lib motor_control_interfaces)
+
 # 角度制御ノード
 add_executable(angle_control src/angle_control.cpp)
 target_include_directories(angle_control PUBLIC
@@ -26,6 +36,7 @@ ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces
 
 install(TARGETS
   can_ros_bridge
+  sim_motor
   angle_control
   DESTINATION lib/${PROJECT_NAME})
 
