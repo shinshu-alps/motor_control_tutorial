@@ -20,7 +20,9 @@ public:
    * 
    * @param torque_constant   モーターのトルク定数
    * @param moment_of_inertia 慣性モーメント
-   * @param 
+   * @param resolution        分解能（1回転あたり）
+   * @param abs_static_friction  静止摩擦
+   * @param abs_kinetic_friction 動摩擦
    * @param damper            ダンパー係数
    * @param initial_velocity  初期角速度
    * @param initial_angle     初期角度
@@ -28,6 +30,7 @@ public:
   VirtualMotor(
     float torque_constant = 1.0f,
     float moment_of_inertia = 1.0f,
+    uint32_t resolution = 1024,
     float abs_static_friction = 0.05f,
     float abs_kinetic_friction = 0.02f,
     float damper = 1.0f,
@@ -35,6 +38,7 @@ public:
     float initial_angle = 0.0f)
   : torque_constant_{torque_constant},
     moment_of_inertia_{moment_of_inertia},
+    resolution_{resolution},
     abs_static_friction_{abs_static_friction},
     abs_kinetic_friction_{abs_kinetic_friction},
     damper_{damper}
@@ -84,7 +88,10 @@ public:
     velocity_integrator_.Calculate(axis_acceleration);                 // 角速度を積分
     angle_integrator_.Calculate(velocity_integrator_.GetCurrentValue());  // 角度を積分
 
-    return angle_integrator_.GetCurrentValue();
+    double real_angle = angle_integrator_.GetCurrentValue();
+    double quantized_angle = std::round(real_angle * resolution_) / resolution_;
+
+    return quantized_angle;
   }
 
 private:
@@ -94,6 +101,8 @@ private:
   float torque_constant_;
   /// @brief 慣性モーメント
   float moment_of_inertia_;
+  /// @brief 分解能(1回転あたり)
+  uint32_t resolution_;
   /// @brief 絶対静止摩擦
   float abs_static_friction_;
   /// @brief 絶対動摩擦
