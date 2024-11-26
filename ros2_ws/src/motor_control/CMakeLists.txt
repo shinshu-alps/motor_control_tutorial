@@ -34,21 +34,20 @@ target_include_directories(angle_control PUBLIC
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces)
 
+# ノードのインストール
 install(TARGETS
   can_ros_bridge
   sim_motor
   angle_control
   DESTINATION lib/${PROJECT_NAME})
 
+# ディレクトリのインストール
 install(DIRECTORY
   launch
-  DESTINATION share/${PROJECT_NAME}/
-)
-
-install(DIRECTORY
+  param_cfg
   rviz_cfg
+  plotjuggler_cfg
   DESTINATION share/${PROJECT_NAME}/
 )
-
 
 ament_package()

@@ -50,7 +50,7 @@ public:
    */
   void Drive(float output_ratio)
   {
-    drive_ratio_ = output_ratio;
+    drive_ratio_ = etl::clamp(output_ratio, -1.0f, 1.0f);
   }
 
   /**
