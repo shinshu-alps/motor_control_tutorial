@@ -45,4 +45,10 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(DIRECTORY
+  rviz_cfg
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+
 ament_package()
