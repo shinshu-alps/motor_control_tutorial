@@ -1,6 +1,8 @@
 #ifndef MOTOR_CONTROL_CONTROL_TARGET_HPP_
 #define MOTOR_CONTROL_CONTROL_TARGET_HPP_
 
+#include <tuple>
+
 struct ControlTarget
 {
   /// @brief 目標値

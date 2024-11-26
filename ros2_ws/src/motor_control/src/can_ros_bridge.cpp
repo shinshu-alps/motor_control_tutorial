@@ -9,30 +9,19 @@
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
 #include "alps_ros2/type/custom_type_topic_conversion_rule.hpp"
 #include "motor_control/can_map.hpp"
-#include "motor_control_interfaces/msg/target_angle.hpp"
+#include "motor_control/control_target.hpp"
+#include "motor_control_interfaces/msg/control_target.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace alps::ros2::type
+namespace motor_control_interfaces::msg
 {
-// TopicConverterの特殊化
-template <>
-struct TopicConverter<double, motor_control_interfaces::msg::TargetAngle>
+auto ToTiedTuple(motor_control_interfaces::msg::ControlTarget & msg)
 {
-  static std::optional<motor_control_interfaces::msg::TargetAngle> ToTopic(
-    const double & original_data)
-  {
-    motor_control_interfaces::msg::TargetAngle ros_topic_data;
-    ros_topic_data.target_angle = original_data;
-    return ros_topic_data;
-  }
-
-  static std::optional<double> ToOriginal(
-    const motor_control_interfaces::msg::TargetAngle & ros_topic_data)
-  {
-    return ros_topic_data.target_angle;
-  }
-};
-}  // namespace alps::ros2::type
+  return std::tie(msg.target, msg.ff_value);
+}
+static_assert(
+  alps::cmn::type::SupportsToTiedTuple<motor_control_interfaces::msg::ControlTarget>::value);
+}  // namespace motor_control_interfaces::msg
 
 using namespace std::chrono_literals;
 
@@ -64,8 +53,17 @@ private:
   alps::cmn::communication::CanParamPort<20> param_port_{transceiver_, can_map::kIdParamPort};
 
   // CANトピックブリッジ : ROS -> CAN
-  alps::ros2::communication::RosToCanTopicBridge<double, motor_control_interfaces::msg::TargetAngle>
-    ros_to_can_topic_target_angle_{transceiver_, *this, can_map::kIdTargetAngle, "target/angle"};
+  alps::ros2::communication::
+    RosToCanTopicBridge<ControlTarget, motor_control_interfaces::msg::ControlTarget>
+      ros_to_can_topic_target_angle_{transceiver_, *this, can_map::kIdTargetAngle, "target/angle"};
+  alps::ros2::communication::
+    RosToCanTopicBridge<ControlTarget, motor_control_interfaces::msg::ControlTarget>
+      ros_to_can_topic_target_velocity_{
+        transceiver_, *this, can_map::kIdTargetVelocity, "target/velocity"};
+  alps::ros2::communication::
+    RosToCanTopicBridge<ControlTarget, motor_control_interfaces::msg::ControlTarget>
+      ros_to_can_topic_target_angle_velocity_{
+        transceiver_, *this, can_map::kIdTargetAngleVelocity, "target/angle_velocity"};
 
   // CANトピックブリッジ : CAN -> ROS
   alps::ros2::communication::CanToRosTopicBridge<

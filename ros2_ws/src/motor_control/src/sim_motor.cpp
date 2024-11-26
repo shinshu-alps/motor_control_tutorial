@@ -11,7 +11,7 @@
 #include "motor_control/ctrl_mode.hpp"
 #include "motor_control/key_input_thread.hpp"
 #include "motor_control/virtual_motor.hpp"
-#include "motor_control_interfaces/msg/target_angle.hpp"
+#include "motor_control_interfaces/msg/control_target.hpp"
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "visualization_msgs/msg/marker.hpp"
@@ -36,15 +36,15 @@ public:
         "calc_info/angle_controller", 1);
 
     // サブスクライバー作成
-    sub_target_angle_ = this->create_subscription<motor_control_interfaces::msg::TargetAngle>(
-      "target/angle", 1, [this](const motor_control_interfaces::msg::TargetAngle::SharedPtr msg) {
+    sub_target_angle_ = this->create_subscription<motor_control_interfaces::msg::ControlTarget>(
+      "target/angle", 1, [this](const motor_control_interfaces::msg::ControlTarget::SharedPtr msg) {
         if (this->ctrl_mode_ != CtrlMode::kAngle) {
           this->ctrl_mode_ = CtrlMode::kAngle;
           this->angle_controller.Reset();
           RCLCPP_INFO(this->get_logger(), "Change to Angle Control Mode");
         }
-        this->angle_ctrl_target_.target = msg->target_angle;
-        angle_controller.SetTargetAngle(msg->target_angle);
+        this->angle_ctrl_target_.target = msg->target;
+        angle_controller.SetTargetAngle(msg->target);
       });
 
     // パラメータコールバックの登録
@@ -132,7 +132,7 @@ private:
     pub_angle_controller_calc_info_;
 
   // サブスクライバー
-  rclcpp::Subscription<motor_control_interfaces::msg::TargetAngle>::SharedPtr sub_target_angle_;
+  rclcpp::Subscription<motor_control_interfaces::msg::ControlTarget>::SharedPtr sub_target_angle_;
 
   // パラメータ
   alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_controller_{
