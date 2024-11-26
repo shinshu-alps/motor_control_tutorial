@@ -69,8 +69,21 @@ private:
   alps::ros2::communication::CanToRosTopicBridge<
     can_map::AngleControllerCalcInfo,
     alps_interfaces::msg::MotorAngleControllerCalcInfo>
-    can_to_ros_topic_bridge_double_{
+    can_to_ros_topic_bridge_angle_controller_calc_info_{
       transceiver_, *this, can_map::kIdAngleControllerCalcInfo, "calc_info/angle_controller"};
+  alps::ros2::communication::CanToRosTopicBridge<
+    can_map::VelocityControllerCalcInfo,
+    alps_interfaces::msg::MotorVelocityControllerCalcInfo>
+    can_to_ros_topic_bridge_velocity_controller_calc_info_{
+      transceiver_, *this, can_map::kIdVelocityControllerCalcInfo, "calc_info/velocity_controller"};
+  alps::ros2::communication::CanToRosTopicBridge<
+    can_map::AngleVelocityControllerCalcInfo,
+    alps_interfaces::msg::MotorAngleControllerCalcInfo>
+    can_to_ros_topic_bridge_angle_velocity_controller_calc_info_{
+      transceiver_,
+      *this,
+      can_map::kIdAngleVelocityControllerCalcInfo,
+      "calc_info/angle_velocity_controller"};
 
   // CANパラメータブリッジ : CAN -> ROS
   alps::ros2::communication::RosToCanParamBridge<can_map::AngleControllerParam>
@@ -81,6 +94,24 @@ private:
       can_map::kIdAngleControllerParam,
       "angle_control",          // サーバーノード名
       "angle_controller_param"  // パラメータ名
+    };
+  alps::ros2::communication::RosToCanParamBridge<can_map::VelocityControllerParam>
+    ros_to_can_param_velocity_controller_param_{
+      transceiver_,
+      param_port_,
+      *this,
+      can_map::kIdVelocityControllerParam,
+      "velocity_control",          // サーバーノード名
+      "velocity_controller_param"  // パラメータ名
+    };
+  alps::ros2::communication::RosToCanParamBridge<can_map::AngleVelocityControllerParam>
+    ros_to_can_param_angle_velocity_controller_param_{
+      transceiver_,
+      param_port_,
+      *this,
+      can_map::kIdAngleVelocityControllerParam,
+      "angle_velocity_control",          // サーバーノード名
+      "angle_velocity_controller_param"  // パラメータ名
     };
 };
 

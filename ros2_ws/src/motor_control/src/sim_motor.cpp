@@ -34,6 +34,12 @@ public:
     pub_angle_controller_calc_info_ =
       this->create_publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
         "calc_info/angle_controller", 1);
+    pub_velocity_controller_calc_info_ =
+      this->create_publisher<alps_interfaces::msg::MotorVelocityControllerCalcInfo>(
+        "calc_info/velocity_controller", 1);
+    pub_angle_velocity_controller_calc_info_ =
+      this->create_publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
+        "calc_info/angle_velocity_controller", 1);
 
     // サブスクライバー作成
     sub_target_angle_ = this->create_subscription<motor_control_interfaces::msg::ControlTarget>(
@@ -46,6 +52,31 @@ public:
         this->angle_ctrl_target_.target = msg->target;
         angle_controller.SetTargetAngle(msg->target);
       });
+    sub_target_velocity_ = this->create_subscription<motor_control_interfaces::msg::ControlTarget>(
+      "target/velocity",
+      1,
+      [this](const motor_control_interfaces::msg::ControlTarget::SharedPtr msg) {
+        if (this->ctrl_mode_ != CtrlMode::kVelocity) {
+          this->ctrl_mode_ = CtrlMode::kVelocity;
+          this->velocity_controller.Reset();
+          RCLCPP_INFO(this->get_logger(), "Change to Velocity Control Mode");
+        }
+        this->velocity_ctrl_target_.target = msg->target;
+        velocity_controller.SetTargetVelocity(msg->target);
+      });
+    sub_target_angle_velocity_ =
+      this->create_subscription<motor_control_interfaces::msg::ControlTarget>(
+        "target/angle_velocity",
+        1,
+        [this](const motor_control_interfaces::msg::ControlTarget::SharedPtr msg) {
+          if (this->ctrl_mode_ != CtrlMode::kAngleVelocity) {
+            this->ctrl_mode_ = CtrlMode::kAngleVelocity;
+            this->angle_velocity_controller.Reset();
+            RCLCPP_INFO(this->get_logger(), "Change to Angle-Velocity Control Mode");
+          }
+          this->angle_velocity_ctrl_target_.target = msg->target;
+          angle_velocity_controller.SetTargetAngle(msg->target);
+        });
 
     // パラメータコールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(
@@ -60,9 +91,34 @@ public:
         angle_controller.SetParam(value);
         angle_controller.Reset();
       });
-    if (param_angle_controller_.HasValidValue()) {
-      angle_controller.SetParam(*param_angle_controller_.GetParam());
-    }
+    param_velocity_controller_.RegisterOnChangeCallback(
+      [this](const alps::cmn::control::MotorVelocityControllerParam & value) {
+        RCLCPP_INFO(
+          this->get_logger(),
+          "velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f, "
+          "kff_velocity=%f, kff_acceleration=%f, target_acceleration_lpf_time_const=%f",
+          value.pid_param.kp,
+          value.pid_param.ki,
+          value.pid_param.kd,
+          value.pid_param.diff_lpf_time_const.count(),
+          value.kff_velocity,
+          value.kff_acceleration,
+          value.target_acceleration_lpf_time_const.count());
+        velocity_controller.SetParam(value);
+        velocity_controller.Reset();
+      });
+    param_angle_velocity_controller_.RegisterOnChangeCallback(
+      [this](const alps::cmn::control::PidParam & value) {
+        RCLCPP_INFO(
+          this->get_logger(),
+          "angle_velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f",
+          value.kp,
+          value.ki,
+          value.kd,
+          value.diff_lpf_time_const.count());
+        angle_velocity_controller.SetParam(value);
+        angle_velocity_controller.Reset();
+      });
 
     // 可視化用メッセージ準備
     msg_visualized_plant_.header.frame_id = "map";
@@ -92,24 +148,24 @@ private:
         break;
       case CtrlMode::kAngle:  // 角度制御
         angle_controller.Control(angle_ctrl_target_.ff_value);
-        // pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
+        pub_angle_controller_calc_info_->publish(
+          alps::ros2::type::ToRosTopic<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
+            angle_controller.GetCalcInfo()));
         break;
       case CtrlMode::kVelocity:  // 速度制御
         velocity_controller.Control(velocity_ctrl_target_.ff_value);
-        // pub_velocity_controller_calc_info.Publish(velocity_controller.GetCalcInfo());
+        pub_velocity_controller_calc_info_->publish(
+          alps::ros2::type::ToRosTopic<alps_interfaces::msg::MotorVelocityControllerCalcInfo>(
+            velocity_controller.GetCalcInfo()));
         break;
       case CtrlMode::kAngleVelocity:  // 角度-速度制御
         angle_velocity_controller.Control(
           velocity_controller, angle_velocity_ctrl_target_.ff_value);
-        // pub_angle_velocity_controller_calc_info.Publish(angle_velocity_controller.GetCalcInfo());
+        pub_angle_velocity_controller_calc_info_->publish(
+          alps::ros2::type::ToRosTopic<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
+            angle_velocity_controller.GetCalcInfo()));
         break;
     }
-
-    // 計算情報
-    pub_angle_controller_calc_info_->publish(
-      alps::ros2::type::ToRosTopic<
-        alps_interfaces::msg::MotorAngleControllerCalcInfo,
-        alps::cmn::control::MotorAngleControllerCalcInfo>(angle_controller.GetCalcInfo()));
 
     // 可視化
     tf2::Quaternion q;
@@ -130,13 +186,25 @@ private:
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pub_visualized_plant_pose_;
   rclcpp::Publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>::SharedPtr
     pub_angle_controller_calc_info_;
+  rclcpp::Publisher<alps_interfaces::msg::MotorVelocityControllerCalcInfo>::SharedPtr
+    pub_velocity_controller_calc_info_;
+  rclcpp::Publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>::SharedPtr
+    pub_angle_velocity_controller_calc_info_;
 
   // サブスクライバー
   rclcpp::Subscription<motor_control_interfaces::msg::ControlTarget>::SharedPtr sub_target_angle_;
+  rclcpp::Subscription<motor_control_interfaces::msg::ControlTarget>::SharedPtr
+    sub_target_velocity_;
+  rclcpp::Subscription<motor_control_interfaces::msg::ControlTarget>::SharedPtr
+    sub_target_angle_velocity_;
 
   // パラメータ
   alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_controller_{
     *this, "angle_control", "angle_controller_param"};
+  alps::ros2::util::TypedParamClient<alps::cmn::control::MotorVelocityControllerParam>
+    param_velocity_controller_{*this, "velocity_control", "velocity_controller_param"};
+  alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_velocity_controller_{
+    *this, "angle_velocity_control", "angle_velocity_controller_param"};
 
   // 仮想モーター
   VirtualMotor motor_{10.0f};

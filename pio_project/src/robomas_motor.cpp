@@ -120,6 +120,14 @@ int main()
   ControlTarget velocity_ctrl_target;
   ControlTarget angle_velocity_ctrl_target;
 
+  // パブリッシャー
+  CanPublisher<can_map::AngleControllerCalcInfo> pub_angle_controller_calc_info{
+    pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
+  CanPublisher<can_map::VelocityControllerCalcInfo> pub_velocity_controller_calc_info{
+    pc_mcu_transceiver, can_map::kIdVelocityControllerCalcInfo};
+  CanPublisher<can_map::AngleVelocityControllerCalcInfo> pub_angle_velocity_controller_calc_info{
+    pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
+
   // サブスクライバー
   auto cb_angle_ctrl_target = [&](const ControlTarget & target) {
     angle_ctrl_target = target;
@@ -151,14 +159,6 @@ int main()
     pc_mcu_transceiver, can_map::kIdTargetVelocity, cb_velocity_ctrl_target};
   CanSubscriber<ControlTarget> sub_angle_velocity_ctrl_target{
     pc_mcu_transceiver, can_map::kIdTargetAngleVelocity, cb_angle_velocity_ctrl_target};
-
-  // パブリッシャー
-  CanPublisher<can_map::AngleControllerCalcInfo> pub_angle_controller_calc_info{
-    pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
-  CanPublisher<can_map::VelocityControllerCalcInfo> pub_velocity_controller_calc_info{
-    pc_mcu_transceiver, can_map::kIdVelocityControllerCalcInfo};
-  CanPublisher<can_map::AngleVelocityControllerCalcInfo> pub_angle_velocity_controller_calc_info{
-    pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
 
   // パラメーター
   auto cb_angle_controller_param = [&](const can_map::AngleControllerParam & param) {
