@@ -33,11 +33,11 @@ public:
       this->create_publisher<geometry_msgs::msg::PoseStamped>("sim_motor/visualized_plant_pose", 1);
     pub_angle_controller_calc_info_ =
       this->create_publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
-        "sim_motor/angle_controller_calc_info", 1);
+        "calc_info/angle_controller", 1);
 
     // サブスクライバー作成
     sub_target_angle_ = this->create_subscription<motor_control_interfaces::msg::TargetAngle>(
-      "target_angle", 1, [this](const motor_control_interfaces::msg::TargetAngle::SharedPtr msg) {
+      "target/angle", 1, [this](const motor_control_interfaces::msg::TargetAngle::SharedPtr msg) {
         if (this->ctrl_mode_ != CtrlMode::kAngle) {
           this->ctrl_mode_ = CtrlMode::kAngle;
           this->angle_controller.Reset();
@@ -47,19 +47,7 @@ public:
         angle_controller.SetTargetAngle(msg->target_angle);
       });
 
-    msg_visualized_plant_.header.frame_id = "map";
-    msg_visualized_plant_.type = visualization_msgs::msg::Marker::CYLINDER;
-    msg_visualized_plant_.scale.x = 1.0;
-    msg_visualized_plant_.scale.y = 1.0;
-    msg_visualized_plant_.scale.z = 0.5;
-    msg_visualized_plant_.color.r = 1.0;
-    msg_visualized_plant_.color.a = 1.0;
-    msg_visualized_plant_pose_.header.frame_id = "map";
-    msg_visualized_plant_pose_.pose.position.x = 0.0;
-    msg_visualized_plant_pose_.pose.position.y = 0.0;
-    msg_visualized_plant_pose_.pose.position.z = 0.25;
-
-    // コールバックの登録
+    // パラメータコールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(
       [this](const alps::cmn::control::PidParam & value) {
         RCLCPP_INFO(
@@ -75,6 +63,19 @@ public:
     if (param_angle_controller_.HasValidValue()) {
       angle_controller.SetParam(*param_angle_controller_.GetParam());
     }
+
+    // 可視化用メッセージ準備
+    msg_visualized_plant_.header.frame_id = "map";
+    msg_visualized_plant_.type = visualization_msgs::msg::Marker::CYLINDER;
+    msg_visualized_plant_.scale.x = 1.0;
+    msg_visualized_plant_.scale.y = 1.0;
+    msg_visualized_plant_.scale.z = 0.5;
+    msg_visualized_plant_.color.r = 1.0;
+    msg_visualized_plant_.color.a = 1.0;
+    msg_visualized_plant_pose_.header.frame_id = "map";
+    msg_visualized_plant_pose_.pose.position.x = 0.0;
+    msg_visualized_plant_pose_.pose.position.y = 0.0;
+    msg_visualized_plant_pose_.pose.position.z = 0.25;
 
     RCLCPP_INFO(this->get_logger(), "Start SimMotor");
   }

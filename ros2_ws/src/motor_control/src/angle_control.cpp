@@ -17,8 +17,8 @@ public:
     timer_ = this->create_wall_timer(20ms, std::bind(&AngleControl::CbTimer, this));
 
     // パブリッシャー作成
-    pub_target_angle_ = this->create_publisher<motor_control_interfaces::msg::TargetAngle>(
-      "target_angle", rclcpp::QoS(10));
+    pub_target_angle_ =
+      this->create_publisher<motor_control_interfaces::msg::TargetAngle>("target/angle", 1);
 
     // コールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(

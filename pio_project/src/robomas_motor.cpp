@@ -124,17 +124,26 @@ int main()
   auto cb_angle_ctrl_target = [&](const ControlTarget & target) {
     angle_ctrl_target = target;
     angle_controller.SetTargetAngle(target.target);
-    ctrl_mode = CtrlMode::kAngle;
+    if (ctrl_mode != CtrlMode::kAngle) {
+      angle_controller.Reset();
+      ctrl_mode = CtrlMode::kAngle;
+    }
   };
   auto cb_velocity_ctrl_target = [&](const ControlTarget & target) {
     velocity_ctrl_target = target;
     velocity_controller.SetTargetVelocity(target.target);
-    ctrl_mode = CtrlMode::kVelocity;
+    if (ctrl_mode != CtrlMode::kVelocity) {
+      velocity_controller.Reset();
+      ctrl_mode = CtrlMode::kVelocity;
+    }
   };
   auto cb_angle_velocity_ctrl_target = [&](const ControlTarget & target) {
     angle_velocity_ctrl_target = target;
     angle_velocity_controller.SetTargetAngle(target.target);
-    ctrl_mode = CtrlMode::kAngleVelocity;
+    if (ctrl_mode != CtrlMode::kAngleVelocity) {
+      angle_velocity_controller.Reset();
+      ctrl_mode = CtrlMode::kAngleVelocity;
+    }
   };
   CanSubscriber<ControlTarget> sub_angle_ctrl_target{
     pc_mcu_transceiver, can_map::kIdTargetAngle, cb_angle_ctrl_target};

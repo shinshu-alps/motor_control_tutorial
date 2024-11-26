@@ -65,7 +65,7 @@ private:
 
   // CANトピックブリッジ : ROS -> CAN
   alps::ros2::communication::RosToCanTopicBridge<double, motor_control_interfaces::msg::TargetAngle>
-    ros_to_can_topic_target_angle_{transceiver_, *this, can_map::kIdTargetAngle, "target_angle"};
+    ros_to_can_topic_target_angle_{transceiver_, *this, can_map::kIdTargetAngle, "target/angle"};
 
   // CANトピックブリッジ : CAN -> ROS
   alps::ros2::communication::CanToRosTopicBridge<
