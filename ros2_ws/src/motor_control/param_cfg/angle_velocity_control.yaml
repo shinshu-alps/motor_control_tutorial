@@ -1,0 +1,31 @@
+/angle_velocity_control:
+  ros__parameters:
+    angle_velocity_controller_param:
+      diff_lpf_time_const:
+        seconds: 0.004999999888241291
+      kd: 0.0
+      ki: 0.0
+      kp: 0.0
+    qos_overrides:
+      /parameter_events:
+        publisher:
+          depth: 1000
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+    target_velocity_deg_per_sec: 102.0
+    use_sim_time: false
+    velocity_controller_param:
+      kff_acceleration: 0.0
+      kff_velocity: 0.0
+      now_velocity_lpf_time_const:
+        seconds: 0.05000000074505806
+      pid_param:
+        diff_lpf_time_const:
+          seconds: 0.004999999888241291
+        kd: 0.0
+        ki: 1.0
+        kp: 1.5
+      target_acceleration_lpf_time_const:
+        seconds: 0.05000000074505806
+

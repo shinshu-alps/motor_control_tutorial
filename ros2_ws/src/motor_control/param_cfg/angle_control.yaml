@@ -3,8 +3,8 @@
     angle_controller_param:
       diff_lpf_time_const:
         seconds: 0.004999999888241291
-      kd: 0.5
-      ki: 0.5
+      kd: 0.6
+      ki: 0.2
       kp: 3.0
     qos_overrides:
       /parameter_events:
