@@ -13,14 +13,14 @@ find_package(visualization_msgs REQUIRED)
 find_package(alps_lib REQUIRED)
 find_package(motor_control_interfaces REQUIRED)
 
-# CANとROSの中継ノード
+# 現実のモーター（CANとROSの中継ノード）
 add_executable(can_ros_bridge src/can_ros_bridge.cpp)
 target_include_directories(can_ros_bridge PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(can_ros_bridge rclcpp alps_lib motor_control_interfaces)
 
-# モーターのシミュレーション
+# シミュレーション上のモーター
 add_executable(sim_motor src/sim_motor.cpp)
 target_include_directories(sim_motor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -34,11 +34,19 @@ target_include_directories(angle_control PUBLIC
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces)
 
+# 速度制御ノード
+add_executable(velocity_control src/velocity_control.cpp)
+target_include_directories(velocity_control PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(velocity_control rclcpp alps_lib motor_control_interfaces)
+
 # ノードのインストール
 install(TARGETS
   can_ros_bridge
   sim_motor
   angle_control
+  velocity_control
   DESTINATION lib/${PROJECT_NAME})
 
 # ディレクトリのインストール

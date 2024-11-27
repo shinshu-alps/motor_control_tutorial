@@ -1,20 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
- <tabbed_widget parent="main_window" name="Main Window">
-  <Tab tab_name="angle_controller" containers="1">
+ <tabbed_widget name="Main Window" parent="main_window">
+  <Tab containers="1" tab_name="angle_controller">
    <Container>
-    <DockSplitter sizes="0.5;0.5" count="2" orientation="-">
+    <DockSplitter orientation="-" count="2" sizes="0.500568;0.499432">
      <DockArea name="...">
-      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
-       <range left="1732660808.672140" top="1.186880" bottom="1.184514" right="1732660828.671867"/>
+      <plot flip_y="false" mode="TimeSeries" flip_x="false" style="Lines">
+       <range left="0.000000" top="0.100000" right="0.000000" bottom="-0.100000"/>
        <limitY/>
        <curve color="#1f77b4" name="/calc_info/angle_controller/now_angle"/>
        <curve color="#d62728" name="/calc_info/angle_controller/target_angle"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot style="Lines" flip_x="false" mode="TimeSeries" flip_y="false">
-       <range left="1732660808.672140" top="0.007418" bottom="-0.020209" right="1732660828.671867"/>
+      <plot flip_y="false" mode="TimeSeries" flip_x="false" style="Lines">
+       <range left="0.000000" top="0.100000" right="0.000000" bottom="-0.100000"/>
        <limitY/>
        <curve color="#1ac938" name="/calc_info/angle_controller/pid_calc_info/output"/>
        <curve color="#ff7f0e" name="/calc_info/angle_controller/pid_calc_info/p_term"/>
@@ -25,7 +25,33 @@
     </DockSplitter>
    </Container>
   </Tab>
-  <currentTabIndex index="0"/>
+  <Tab containers="1" tab_name="velocity_controller">
+   <Container>
+    <DockSplitter orientation="-" count="2" sizes="0.50055;0.49945">
+     <DockArea name="...">
+      <plot flip_y="false" mode="TimeSeries" flip_x="false" style="Lines">
+       <range left="1732666038.311355" top="1.538508" right="1732666058.291190" bottom="-0.037525"/>
+       <limitY/>
+       <curve color="#1f77b4" name="/calc_info/velocity_controller/target_velocity"/>
+       <curve color="#d62728" name="/calc_info/velocity_controller/now_velocity"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot flip_y="false" mode="TimeSeries" flip_x="false" style="Lines">
+       <range left="1732666038.311355" top="0.100000" right="1732666058.291190" bottom="-0.100000"/>
+       <limitY/>
+       <curve color="#1ac938" name="/calc_info/velocity_controller/pid_calc_info/output"/>
+       <curve color="#ff7f0e" name="/calc_info/velocity_controller/pid_calc_info/p_term"/>
+       <curve color="#f14cc1" name="/calc_info/velocity_controller/pid_calc_info/i_term"/>
+       <curve color="#9467bd" name="/calc_info/velocity_controller/pid_calc_info/d_term"/>
+       <curve color="#17becf" name="/calc_info/velocity_controller/ff_velocity_term"/>
+       <curve color="#bcbd22" name="/calc_info/velocity_controller/ff_acceleration_term"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <currentTabIndex index="1"/>
  </tabbed_widget>
  <use_relative_time_offset enabled="0"/>
  <!-- - - - - - - - - - - - - - - -->
@@ -50,7 +76,7 @@
    <max_array_size value="50"/>
    <boolean_strings_to_number value="true"/>
    <remove_suffix_from_strings value="true"/>
-   <selected_topics value="/calc_info/angle_controller;/target/angle"/>
+   <selected_topics value="/calc_info/angle_controller;/target/angle;/target/angle_velocity;/calc_info/angle_velocity_controller;/calc_info/velocity_controller;/target/velocity"/>
   </plugin>
   <plugin ID="UDP Server"/>
   <plugin ID="WebSocket Server"/>
