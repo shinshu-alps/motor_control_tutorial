@@ -3,9 +3,9 @@
     angle_controller_param:
       diff_lpf_time_const:
         seconds: 0.004999999888241291
-      kd: 0.6
-      ki: 0.2
-      kp: 3.0
+      kd: 0.03
+      ki: 0.02
+      kp: 0.2
     qos_overrides:
       /parameter_events:
         publisher:
@@ -13,6 +13,6 @@
           durability: volatile
           history: keep_last
           reliability: reliable
-    target_angle_deg: 180.0
+    target_angle_deg: 360.0
     use_sim_time: false
 

@@ -7,7 +7,7 @@
           durability: volatile
           history: keep_last
           reliability: reliable
-    target_velocity_deg_per_sec: -360.0
+    target_velocity_deg_per_sec: 360.0
     use_sim_time: false
     velocity_controller_param:
       kff_acceleration: 0.0
@@ -17,9 +17,9 @@
       pid_param:
         diff_lpf_time_const:
           seconds: 0.004999999888241291
-        kd: 0.0
-        ki: 1.0
-        kp: 1.5
+        kd: 0.003
+        ki: 0.05
+        kp: 0.01
       target_acceleration_lpf_time_const:
         seconds: 0.05000000074505806
 

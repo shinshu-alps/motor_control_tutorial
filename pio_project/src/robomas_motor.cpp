@@ -215,7 +215,7 @@ int main()
         break;
       case CtrlMode::kAngle:  // 角度制御
         angle_controller.Control(angle_ctrl_target.ff_value);
-        pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
+        // pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
         break;
       case CtrlMode::kVelocity:  // 速度制御
         velocity_controller.Control(velocity_ctrl_target.ff_value);
@@ -229,6 +229,8 @@ int main()
 
     // モーターの出力値をCAN通信で送信
     can_port.PublishMotorOutput();
+
+    pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
 
     // ::rtos::ThisThread::sleep_for(20ms);
     main_loop_rate.Sleep();

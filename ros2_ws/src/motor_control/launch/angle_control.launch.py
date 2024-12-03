@@ -19,7 +19,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             [
                 os.path.join(get_package_share_directory("motor_control"), "launch"),
-                "/sim_motor.launch.py",
+                # "/sim_motor.launch.py",
+                "/real_motor.launch.py",
             ]
         )
     )

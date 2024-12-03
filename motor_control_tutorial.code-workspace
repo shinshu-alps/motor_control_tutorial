@@ -94,6 +94,7 @@
 		},
 		"git.detectSubmodules": true,
 		"search.followSymlinks": false,
-		"testMate.cpp.test.executables": "**/{build,Build,BUILD,out,Out,OUT}/**/*{test,Test,TEST}*"
+		"testMate.cpp.test.executables": "**/{build,Build,BUILD,out,Out,OUT}/**/*{test,Test,TEST}*",
+		"ros.distro": "humble"
 	}
 }
