@@ -10,9 +10,13 @@
 #include "alps_ros2/type/custom_type_topic_conversion_rule.hpp"
 #include "motor_control/can_map.hpp"
 #include "motor_control/control_target.hpp"
+#include "motor_control_interfaces/msg/angle.hpp"
 #include "motor_control_interfaces/msg/control_target.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
+// CAN <-> ROSの変換のためのコード ---------------------------------------------------------
 namespace motor_control_interfaces::msg
 {
 auto ToTiedTuple(motor_control_interfaces::msg::ControlTarget & msg)
@@ -23,8 +27,21 @@ static_assert(
   alps::cmn::type::SupportsToTiedTuple<motor_control_interfaces::msg::ControlTarget>::value);
 }  // namespace motor_control_interfaces::msg
 
-using namespace std::chrono_literals;
+namespace alps::ros2::type
+{
+template <>
+struct TopicConverter<float, motor_control_interfaces::msg::Angle>
+{
+  static std::optional<motor_control_interfaces::msg::Angle> ToTopic(const float & orig_msg)
+  {
+    motor_control_interfaces::msg::Angle ros_msg;
+    ros_msg.angle = orig_msg;
+    return ros_msg;
+  }
+};
+}  // namespace alps::ros2::type
 
+// CanRosBridgeクラス ----------------------------------------------------------------------
 class CanRosBridge : public rclcpp::Node
 {
 public:
@@ -84,6 +101,9 @@ private:
       *this,
       can_map::kIdAngleVelocityControllerCalcInfo,
       "calc_info/angle_velocity_controller"};
+  alps::ros2::communication::
+    CanToRosTopicBridge<can_map::NowAngle, motor_control_interfaces::msg::Angle>
+      can_to_ros_topic_bridge_now_angle_{transceiver_, *this, can_map::kIdNowAngle, "now_angle"};
 
   // CANパラメータブリッジ : CAN -> ROS
   alps::ros2::communication::RosToCanParamBridge<can_map::AngleControllerParam>

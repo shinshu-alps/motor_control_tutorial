@@ -11,6 +11,7 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(alps_interfaces REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Angle.msg"
   "msg/ControlTarget.msg"
   DEPENDENCIES alps_interfaces
 )

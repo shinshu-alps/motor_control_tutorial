@@ -19,6 +19,8 @@ constexpr Id kIdTargetAngleVelocity = 0x102;
 constexpr Id kIdAngleVelocityControllerParam = 0x202;
 constexpr Id kIdAngleVelocityControllerCalcInfo = 0x302;
 
+constexpr Id kIdNowAngle = 0x400;
+
 using AngleControllerParam = alps::cmn::control::PidParam;
 using AngleControllerCalcInfo = alps::cmn::control::MotorAngleControllerCalcInfo;
 using AngleVelocityControllerParam = alps::cmn::control::PidParam;
@@ -26,4 +28,7 @@ using AngleVelocityControllerParam = alps::cmn::control::PidParam;
 using VelocityControllerParam = alps::cmn::control::MotorVelocityControllerParam;
 using VelocityControllerCalcInfo = alps::cmn::control::MotorVelocityControllerCalcInfo;
 using AngleVelocityControllerCalcInfo = alps::cmn::control::MotorAngleControllerCalcInfo;
+
+using NowAngle = float;
+
 }  // namespace can_map

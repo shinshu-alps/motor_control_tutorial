@@ -127,6 +127,7 @@ int main()
     pc_mcu_transceiver, can_map::kIdVelocityControllerCalcInfo};
   CanPublisher<can_map::AngleVelocityControllerCalcInfo> pub_angle_velocity_controller_calc_info{
     pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
+  CanPublisher<can_map::NowAngle> pub_now_angle{pc_mcu_transceiver, can_map::kIdNowAngle};
 
   // サブスクライバー
   auto cb_angle_ctrl_target = [&](const ControlTarget & target) {
@@ -215,7 +216,7 @@ int main()
         break;
       case CtrlMode::kAngle:  // 角度制御
         angle_controller.Control(angle_ctrl_target.ff_value);
-        // pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
+        pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
         break;
       case CtrlMode::kVelocity:  // 速度制御
         velocity_controller.Control(velocity_ctrl_target.ff_value);
@@ -229,10 +230,9 @@ int main()
 
     // モーターの出力値をCAN通信で送信
     can_port.PublishMotorOutput();
+    // 現在角度を送信
+    pub_now_angle.Publish(motor.GetAngle());
 
-    pub_angle_controller_calc_info.Publish(angle_controller.GetCalcInfo());
-
-    // ::rtos::ThisThread::sleep_for(20ms);
     main_loop_rate.Sleep();
   }
 }
