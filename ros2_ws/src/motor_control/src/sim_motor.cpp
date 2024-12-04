@@ -9,7 +9,6 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "motor_control/control_target.hpp"
 #include "motor_control/ctrl_mode.hpp"
-#include "motor_control/key_input_thread.hpp"
 #include "motor_control/virtual_motor.hpp"
 #include "motor_control_interfaces/msg/control_target.hpp"
 

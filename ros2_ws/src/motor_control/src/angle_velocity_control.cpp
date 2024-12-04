@@ -1,7 +1,6 @@
 #include "alps_cmn/util/angle.hpp"
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
 #include "alps_ros2/util/typed_param.hpp"
-#include "motor_control/key_input_thread.hpp"
 #include "motor_control_interfaces/msg/control_target.hpp"
 
 using namespace std::chrono_literals;
