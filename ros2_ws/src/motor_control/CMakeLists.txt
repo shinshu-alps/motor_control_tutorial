@@ -13,6 +13,13 @@ find_package(visualization_msgs REQUIRED)
 find_package(alps_lib REQUIRED)
 find_package(motor_control_interfaces REQUIRED)
 
+# 視覚化ノード
+add_executable(visualize src/visualize.cpp)
+target_include_directories(visualize PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(visualize rclcpp tf2 tf2_geometry_msgs visualization_msgs alps_lib motor_control_interfaces)
+
 # 現実のモーター（CANとROSの中継ノード）
 add_executable(can_ros_bridge src/can_ros_bridge.cpp)
 target_include_directories(can_ros_bridge PUBLIC
@@ -25,7 +32,7 @@ add_executable(sim_motor src/sim_motor.cpp)
 target_include_directories(sim_motor PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(sim_motor rclcpp tf2 tf2_geometry_msgs visualization_msgs alps_lib motor_control_interfaces)
+ament_target_dependencies(sim_motor rclcpp alps_lib motor_control_interfaces)
 
 # 角度制御ノード
 add_executable(angle_control src/angle_control.cpp)
@@ -50,6 +57,7 @@ ament_target_dependencies(angle_velocity_control rclcpp alps_lib motor_control_i
 
 # ノードのインストール
 install(TARGETS
+  visualize
   can_ros_bridge
   sim_motor
   angle_control

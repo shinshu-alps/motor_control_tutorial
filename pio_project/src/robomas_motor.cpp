@@ -131,24 +131,27 @@ int main()
 
   // サブスクライバー
   auto cb_angle_ctrl_target = [&](const ControlTarget & target) {
-    angle_ctrl_target = target;
+    // 目標値セット
     angle_controller.SetTargetAngle(target.target);
+    angle_ctrl_target = target;
     if (ctrl_mode != CtrlMode::kAngle) {
       angle_controller.Reset();
       ctrl_mode = CtrlMode::kAngle;
     }
   };
   auto cb_velocity_ctrl_target = [&](const ControlTarget & target) {
-    velocity_ctrl_target = target;
+    // 目標値セット
     velocity_controller.SetTargetVelocity(target.target);
+    velocity_ctrl_target = target;
     if (ctrl_mode != CtrlMode::kVelocity) {
       velocity_controller.Reset();
       ctrl_mode = CtrlMode::kVelocity;
     }
   };
   auto cb_angle_velocity_ctrl_target = [&](const ControlTarget & target) {
-    angle_velocity_ctrl_target = target;
+    // 目標値セット
     angle_velocity_controller.SetTargetAngle(target.target);
+    angle_velocity_ctrl_target = target;
     if (ctrl_mode != CtrlMode::kAngleVelocity) {
       angle_velocity_controller.Reset();
       ctrl_mode = CtrlMode::kAngleVelocity;
