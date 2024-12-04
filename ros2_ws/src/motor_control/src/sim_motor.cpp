@@ -10,6 +10,7 @@
 #include "motor_control/control_target.hpp"
 #include "motor_control/ctrl_mode.hpp"
 #include "motor_control/virtual_motor.hpp"
+#include "motor_control_interfaces/msg/angle.hpp"
 #include "motor_control_interfaces/msg/control_target.hpp"
 
 using namespace std::chrono_literals;
@@ -32,6 +33,7 @@ public:
     pub_angle_velocity_controller_calc_info_ =
       this->create_publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
         "calc_info/angle_velocity_controller", 1);
+    pub_now_angle_ = this->create_publisher<motor_control_interfaces::msg::Angle>("now_angle", 1);
 
     // サブスクライバー作成
     sub_target_angle_ = this->create_subscription<motor_control_interfaces::msg::ControlTarget>(
@@ -118,8 +120,6 @@ public:
 private:
   void CbTimer()
   {
-    // 受信データ処理
-
     // 制御
     switch (ctrl_mode_) {
       case CtrlMode::kNone:  // 待機
@@ -145,6 +145,11 @@ private:
             angle_velocity_controller.GetCalcInfo()));
         break;
     }
+
+    // 現在の角度送信
+    motor_control_interfaces::msg::Angle msg_now_angle;
+    msg_now_angle.angle = motor_.GetAngle();
+    pub_now_angle_->publish(msg_now_angle);
   }
 
   // タイマー
@@ -157,6 +162,7 @@ private:
     pub_velocity_controller_calc_info_;
   rclcpp::Publisher<alps_interfaces::msg::MotorAngleControllerCalcInfo>::SharedPtr
     pub_angle_velocity_controller_calc_info_;
+  rclcpp::Publisher<motor_control_interfaces::msg::Angle>::SharedPtr pub_now_angle_;
 
   // サブスクライバー
   rclcpp::Subscription<motor_control_interfaces::msg::ControlTarget>::SharedPtr sub_target_angle_;
@@ -167,14 +173,24 @@ private:
 
   // パラメータ
   alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_controller_{
-    *this, "angle_control", "angle_controller_param"};
+    *this, "control_commander", "angle_controller_param"};
   alps::ros2::util::TypedParamClient<alps::cmn::control::MotorVelocityControllerParam>
-    param_velocity_controller_{*this, "velocity_control", "velocity_controller_param"};
+    param_velocity_controller_{*this, "control_commander", "velocity_controller_param"};
   alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_velocity_controller_{
-    *this, "angle_velocity_control", "angle_velocity_controller_param"};
+    *this, "control_commander", "angle_velocity_controller_param"};
 
   // 仮想モーター
-  VirtualMotor motor_{10.0f};
+  VirtualMotor motor_{
+    // 10.0f
+    20.0f,   // float torque_constant =
+    0.1f,    // float moment_of_inertia =
+    1024,    // uint32_t resolution =
+    0.05f,   // float abs_static_friction =
+    0.001f,  // float abs_kinetic_friction =
+    1.0f,    // float damper =
+    0.0f,    // float initial_velocity =
+    0.0f     // float initial_angle =
+  };
 
   // モーター制御
   CtrlMode ctrl_mode_{CtrlMode::kNone};

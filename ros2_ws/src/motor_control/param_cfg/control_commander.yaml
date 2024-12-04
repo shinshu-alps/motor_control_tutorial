@@ -1,11 +1,21 @@
-/angle_velocity_control:
+/control_commander:
   ros__parameters:
+    angle_controller_param:
+      diff_lpf_time_const:
+        seconds: 0.004999999888241291
+      kd: 0.03
+      ki: 0.02
+      kp: 0.2
     angle_velocity_controller_param:
       diff_lpf_time_const:
         seconds: 0.004999999888241291
       kd: 0.0
       ki: 0.0
       kp: 0.0
+    ctrl_mode_flag:
+      angle_mode: true
+      angle_velocity_mode: false
+      velocity_mode: false
     qos_overrides:
       /parameter_events:
         publisher:
@@ -13,6 +23,7 @@
           durability: volatile
           history: keep_last
           reliability: reliable
+    target_angle_deg: 360.0
     target_velocity_deg_per_sec: 102.0
     use_sim_time: false
     velocity_controller_param:
@@ -23,9 +34,9 @@
       pid_param:
         diff_lpf_time_const:
           seconds: 0.004999999888241291
-        kd: 0.0
-        ki: 1.0
-        kp: 1.5
+        kd: 0.003
+        ki: 0.05
+        kp: 0.01
       target_acceleration_lpf_time_const:
         seconds: 0.05000000074505806
 

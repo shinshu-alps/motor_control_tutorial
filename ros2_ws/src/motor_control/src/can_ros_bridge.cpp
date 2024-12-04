@@ -112,7 +112,7 @@ private:
       param_port_,
       *this,
       can_map::kIdAngleControllerParam,
-      "angle_control",          // サーバーノード名
+      "control_commander",          // サーバーノード名
       "angle_controller_param"  // パラメータ名
     };
   alps::ros2::communication::RosToCanParamBridge<can_map::VelocityControllerParam>
@@ -121,7 +121,7 @@ private:
       param_port_,
       *this,
       can_map::kIdVelocityControllerParam,
-      "velocity_control",          // サーバーノード名
+      "control_commander",          // サーバーノード名
       "velocity_controller_param"  // パラメータ名
     };
   alps::ros2::communication::RosToCanParamBridge<can_map::AngleVelocityControllerParam>
@@ -130,7 +130,7 @@ private:
       param_port_,
       *this,
       can_map::kIdAngleVelocityControllerParam,
-      "angle_velocity_control",          // サーバーノード名
+      "control_commander",          // サーバーノード名
       "angle_velocity_controller_param"  // パラメータ名
     };
 };

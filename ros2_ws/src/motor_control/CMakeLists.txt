@@ -34,35 +34,19 @@ target_include_directories(sim_motor PUBLIC
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(sim_motor rclcpp alps_lib motor_control_interfaces)
 
-# 角度制御ノード
-add_executable(angle_control src/angle_control.cpp)
-target_include_directories(angle_control PUBLIC
+# 制御指令送信ノード
+add_executable(control_commander src/control_commander.cpp)
+target_include_directories(control_commander PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(angle_control rclcpp alps_lib motor_control_interfaces)
-
-# 速度制御ノード
-add_executable(velocity_control src/velocity_control.cpp)
-target_include_directories(velocity_control PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(velocity_control rclcpp alps_lib motor_control_interfaces)
-
-# 角度-速度制御ノード
-add_executable(angle_velocity_control src/angle_velocity_control.cpp)
-target_include_directories(angle_velocity_control PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(angle_velocity_control rclcpp alps_lib motor_control_interfaces)
+ament_target_dependencies(control_commander rclcpp alps_lib motor_control_interfaces)
 
 # ノードのインストール
 install(TARGETS
   visualize
   can_ros_bridge
   sim_motor
-  angle_control
-  velocity_control
-  angle_velocity_control
+  control_commander
   DESTINATION lib/${PROJECT_NAME})
 
 # ディレクトリのインストール
