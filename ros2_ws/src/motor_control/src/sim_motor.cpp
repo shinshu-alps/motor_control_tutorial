@@ -140,6 +140,9 @@ private:
       case CtrlMode::kAngleVelocity:  // 角度-速度制御
         angle_velocity_controller.Control(
           velocity_controller, angle_velocity_ctrl_target_.ff_value);
+        pub_velocity_controller_calc_info_->publish(
+          alps::ros2::type::ToRosTopic<alps_interfaces::msg::MotorVelocityControllerCalcInfo>(
+            velocity_controller.GetCalcInfo()));
         pub_angle_velocity_controller_calc_info_->publish(
           alps::ros2::type::ToRosTopic<alps_interfaces::msg::MotorAngleControllerCalcInfo>(
             angle_velocity_controller.GetCalcInfo()));

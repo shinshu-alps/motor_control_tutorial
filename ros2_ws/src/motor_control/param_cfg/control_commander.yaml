@@ -11,7 +11,7 @@
         seconds: 0.004999999888241291
       kd: 0.0
       ki: 0.0
-      kp: 0.0
+      kp: 0.7
     ctrl_mode_flag:
       angle_mode: true
       angle_velocity_mode: false

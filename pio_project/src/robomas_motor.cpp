@@ -227,6 +227,7 @@ int main()
         break;
       case CtrlMode::kAngleVelocity:  // 角度-速度制御
         angle_velocity_controller.Control(velocity_controller, angle_velocity_ctrl_target.ff_value);
+        pub_velocity_controller_calc_info.Publish(velocity_controller.GetCalcInfo());
         pub_angle_velocity_controller_calc_info.Publish(angle_velocity_controller.GetCalcInfo());
         break;
     }
