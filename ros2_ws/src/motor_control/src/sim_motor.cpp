@@ -76,14 +76,19 @@ public:
 
     // パラメータコールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(
-      [this](const alps::cmn::control::PidParam & value) {
+      [this](const alps::cmn::control::MotorAngleControllerParam & value) {
         RCLCPP_INFO(
           this->get_logger(),
-          "angle_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f",
-          value.kp,
-          value.ki,
-          value.kd,
-          value.diff_lpf_time_const.count());
+          "angle_controller_param: {kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, drive_ratio_limit: {%f, "
+          "%f}, angle_limit: {%f, %f}",
+          value.pid_param.kp,
+          value.pid_param.ki,
+          value.pid_param.kd,
+          value.pid_param.diff_lpf_time_const.count(),
+          value.drive_ratio_limit.lowest,
+          value.drive_ratio_limit.max,
+          value.angle_limit.lowest,
+          value.angle_limit.max);
         angle_controller.SetParam(value);
         angle_controller.Reset();
       });
@@ -177,8 +182,8 @@ private:
     sub_target_angle_velocity_;
 
   // パラメータ
-  alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_controller_{
-    *this, "control_commander", "angle_controller_param"};
+  alps::ros2::util::TypedParamClient<alps::cmn::control::MotorAngleControllerParam>
+    param_angle_controller_{*this, "control_commander", "angle_controller_param"};
   alps::ros2::util::TypedParamClient<alps::cmn::control::MotorVelocityControllerParam>
     param_velocity_controller_{*this, "control_commander", "velocity_controller_param"};
   alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_velocity_controller_{
@@ -207,7 +212,8 @@ private:
     MotorVelocityController<std::chrono::high_resolution_clock, VirtualMotor, VirtualMotor>;
   using MotorAngleVelocityController =
     alps::cmn::control::MotorAngleVelocityController<std::chrono::high_resolution_clock>;
-  MotorAngleController angle_controller{motor_, motor_, alps::cmn::control::PidParam{}};
+  MotorAngleController angle_controller{
+    motor_, motor_, alps::cmn::control::MotorAngleControllerParam{}};
   MotorVelocityController velocity_controller{
     motor_, motor_, alps::cmn::control::MotorVelocityControllerParam{}};
   MotorAngleVelocityController angle_velocity_controller{alps::cmn::control::PidParam{}};

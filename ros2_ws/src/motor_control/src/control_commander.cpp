@@ -1,3 +1,5 @@
+#include "alps_cmn/control/motor_angle_velocity_controller.hpp"
+#include "alps_cmn/control/motor_velocity_controller.hpp"
 #include "alps_cmn/util/angle.hpp"
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
 #include "alps_ros2/ui/joy.hpp"
@@ -26,14 +28,19 @@ public:
 
     // パラメータコールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(
-      [this](const alps::cmn::control::PidParam & value) {
+      [this](const alps::cmn::control::MotorAngleControllerParam & value) {
         RCLCPP_INFO(
           this->get_logger(),
-          "angle_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f",
-          value.kp,
-          value.ki,
-          value.kd,
-          value.diff_lpf_time_const.count());
+          "angle_controller_param: pid{kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, drive_ratio_limit{%f, "
+          "%f}, angle_limit{%5f, %5f}",
+          value.pid_param.kp,
+          value.pid_param.ki,
+          value.pid_param.kd,
+          value.pid_param.diff_lpf_time_const.count(),
+          value.drive_ratio_limit.lowest,
+          value.drive_ratio_limit.max,
+          value.angle_limit.lowest,
+          value.angle_limit.max);
       });
     param_velocity_controller_.RegisterOnChangeCallback(
       [this](const alps::cmn::control::MotorVelocityControllerParam & value) {
@@ -156,8 +163,8 @@ private:
   alps::ros2::ui::Joy joy_{*this, "joy"};
   static constexpr float kMinAxisInput = 0.08;
 
-  alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_controller_{
-    *this, "angle_controller_param"};
+  alps::ros2::util::TypedParamServer<alps::cmn::control::MotorAngleControllerParam>
+    param_angle_controller_{*this, "angle_controller_param"};
   alps::ros2::util::TypedParamServer<alps::cmn::control::MotorVelocityControllerParam>
     param_velocity_controller_{*this, "velocity_controller_param"};
   alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_velocity_controller_{

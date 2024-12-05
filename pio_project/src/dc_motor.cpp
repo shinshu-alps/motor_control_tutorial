@@ -114,7 +114,7 @@ int main()
   using MotorAngleVelocityController =
     alps::cmn::control::MotorAngleVelocityController<mbed::HighResClock>;
   // ※パラメータはここではセットしていない
-  MotorAngleController angle_controller{motor, encoder, alps::cmn::control::PidParam{}};
+  MotorAngleController angle_controller{motor, encoder, alps::cmn::control::MotorAngleControllerParam{}};
   MotorVelocityController velocity_controller{
     motor, encoder, alps::cmn::control::MotorVelocityControllerParam{}};
   MotorAngleVelocityController angle_velocity_controller{alps::cmn::control::PidParam{}};
