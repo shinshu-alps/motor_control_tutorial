@@ -83,7 +83,7 @@ public:
     }
     float dumper_applied_acceleration =
       pure_acceleration -
-      (damper_ * velocity_integrator_.GetCurrentValue());  // ダンパーを考慮した加速度
+      (damper_ * velocity_integrator_.GetCurrentValue());              // ダンパーを考慮した加速度
     float axis_acceleration = dumper_applied_acceleration - friction;  // 摩擦を考慮した加速度
     velocity_integrator_.Calculate(axis_acceleration);                 // 角速度を積分
     angle_integrator_.Calculate(velocity_integrator_.GetCurrentValue());  // 角度を積分
@@ -92,6 +92,11 @@ public:
     double quantized_angle = std::round(real_angle * resolution_) / resolution_;
 
     return quantized_angle;
+  }
+
+  void ResetAngle()
+  {
+    angle_integrator_.Reset();
   }
 
 private:

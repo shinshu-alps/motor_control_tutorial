@@ -137,6 +137,7 @@ int main()
     if (ctrl_mode != CtrlMode::kAngle) {
       angle_controller.Reset();
       ctrl_mode = CtrlMode::kAngle;
+      motor.ResetAngle();
     }
   };
   auto cb_velocity_ctrl_target = [&](const ControlTarget & target) {
@@ -155,6 +156,7 @@ int main()
     if (ctrl_mode != CtrlMode::kAngleVelocity) {
       angle_velocity_controller.Reset();
       ctrl_mode = CtrlMode::kAngleVelocity;
+      motor.ResetAngle();
     }
   };
   CanSubscriber<ControlTarget> sub_angle_ctrl_target{

@@ -42,6 +42,7 @@ public:
           this->ctrl_mode_ = CtrlMode::kAngle;
           this->angle_controller.Reset();
           RCLCPP_INFO(this->get_logger(), "Change to Angle Control Mode");
+          this->motor_.ResetAngle();
         }
         this->angle_ctrl_target_.target = msg->target;
         angle_controller.SetTargetAngle(msg->target);
@@ -67,6 +68,7 @@ public:
             this->ctrl_mode_ = CtrlMode::kAngleVelocity;
             this->angle_velocity_controller.Reset();
             RCLCPP_INFO(this->get_logger(), "Change to Angle-Velocity Control Mode");
+            this->motor_.ResetAngle();
           }
           this->angle_velocity_ctrl_target_.target = msg->target;
           angle_velocity_controller.SetTargetAngle(msg->target);
