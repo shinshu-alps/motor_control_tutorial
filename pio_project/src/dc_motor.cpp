@@ -5,6 +5,7 @@
 
 #ifdef DC_MOTOR
 
+#include "board/motor_driver.hpp"
 #include "alps_mbed/actuator/dc_motor.hpp"
 
 #include "alps_cmn/communication/can_data_frame.hpp"
@@ -18,12 +19,12 @@
 #include "ctrl_mode.hpp"
 #include "mbed.h"
 
-constexpr PinName kPwmPin = D3;
-constexpr PinName kDirPin = D8;
-constexpr PinName kAPhasePin = D4;
-constexpr PinName kBPhasePin = D5;
-constexpr PinName kCanRd = D10;
-constexpr PinName kCanTd = D2;
+constexpr PinName kPwmPin = nhk2024::board::MotorDriver::kMotorPwm0;
+constexpr PinName kDirPin = nhk2024::board::MotorDriver::kMotorDir0;
+constexpr PinName kAPhasePin = nhk2024::board::MotorDriver::kEnc0A;
+constexpr PinName kBPhasePin = nhk2024::board::MotorDriver::kEnc0B;;
+constexpr PinName kCanRd = nhk2024::board::MotorDriver::kCanRd;
+constexpr PinName kCanTd = nhk2024::board::MotorDriver::kCanTd;
 
 template <class T>
 using CanSubscriber = alps::cmn::communication::CanSubscriber<T>;
@@ -86,16 +87,16 @@ private:
 int main()
 {
   // PC-MCU用CAN
-  alps::mbed::communication::BufferedCanIo<300, 300> pc_mcu_can{kCanRd, kCanTd};
-  alps::cmn::communication::CanTypedDataTransceiver<decltype(pc_mcu_can), 100> pc_mcu_transceiver{
+  alps::mbed::communication::BufferedCanIo<> pc_mcu_can{kCanRd, kCanTd};
+  alps::cmn::communication::CanTypedDataTransceiver<decltype(pc_mcu_can), 50> pc_mcu_transceiver{
     pc_mcu_can};
-  alps::cmn::communication::CanParamPort<30> can_param_port{
+  alps::cmn::communication::CanParamPort<10> can_param_port{
     pc_mcu_transceiver, can_map::kIdParamPort};
 
   // モーター
   alps::mbed::gpio::PwmOut pwm(kPwmPin);
   alps::mbed::gpio::DigitalOut dir(kDirPin);
-  alps::mbed::actuator::DcMotor motor(pwm, dir);
+  alps::mbed::actuator::DcMotor motor(pwm, dir, false);
 
   // エンコーダー
   alps::mbed::gpio::InterruptIn a_phase(kAPhasePin);
