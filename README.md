@@ -57,3 +57,17 @@ motor_control_tutorial/
         ├── cpp_pubsub
         └── sample_ros2_pkgs        - サンプルコード置き場(シンボリックリンク)
 ```
+
+## 起動方法
+
+### シミュレーション
+
+```bash
+ros2 launch motor_control launch_all.launch.py
+```
+
+### 実機
+
+```bash
+ros2 launch motor_control launch_all.launch.py sim:=false
+```

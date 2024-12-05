@@ -23,8 +23,8 @@
           durability: volatile
           history: keep_last
           reliability: reliable
-    target_angle_deg: 360.0
-    target_velocity_deg_per_sec: 102.0
+    target_angle_deg: 0.0
+    target_velocity_deg_per_sec: 0.0
     use_sim_time: false
     velocity_controller_param:
       kff_acceleration: 0.0

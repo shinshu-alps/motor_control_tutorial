@@ -126,7 +126,7 @@ int main()
   CanPublisher<can_map::VelocityControllerCalcInfo> pub_velocity_controller_calc_info{
     pc_mcu_transceiver, can_map::kIdVelocityControllerCalcInfo};
   CanPublisher<can_map::AngleVelocityControllerCalcInfo> pub_angle_velocity_controller_calc_info{
-    pc_mcu_transceiver, can_map::kIdAngleControllerCalcInfo};
+    pc_mcu_transceiver, can_map::kIdAngleVelocityControllerCalcInfo};
   CanPublisher<can_map::NowAngle> pub_now_angle{pc_mcu_transceiver, can_map::kIdNowAngle};
 
   // サブスクライバー
@@ -154,6 +154,7 @@ int main()
     angle_velocity_controller.SetTargetAngle(target.target);
     angle_velocity_ctrl_target = target;
     if (ctrl_mode != CtrlMode::kAngleVelocity) {
+      velocity_controller.Reset();
       angle_velocity_controller.Reset();
       ctrl_mode = CtrlMode::kAngleVelocity;
       motor.ResetAngle();
