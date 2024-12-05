@@ -191,7 +191,6 @@ private:
 
   // 仮想モーター
   VirtualMotor motor_{
-    // 10.0f
     20.0f,   // float torque_constant =
     0.1f,    // float moment_of_inertia =
     1024,    // uint32_t resolution =

@@ -3,18 +3,18 @@
  <tabbed_widget name="Main Window" parent="main_window">
   <Tab containers="1" tab_name="angle_controller">
    <Container>
-    <DockSplitter sizes="0.5;0.5" count="2" orientation="-">
+    <DockSplitter orientation="-" count="2" sizes="0.5;0.5">
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="6.283185" top="6.283204" right="1733354747.340295" left="1733354727.340547"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-4.073110" top="3.461605" left="1733389113.654397" right="1733389133.643978"/>
        <limitY/>
        <curve name="/calc_info/angle_controller/now_angle" color="#1f77b4"/>
        <curve name="/calc_info/angle_controller/target_angle" color="#d62728"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="-1.500000" top="1.500000" right="1733354747.340295" left="1733354727.340547"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-1.500000" top="1.500000" left="1733389113.654397" right="1733389133.643978"/>
        <limitY min="-1.5" max="1.5"/>
        <curve name="/calc_info/angle_controller/pid_calc_info/output" color="#1ac938"/>
        <curve name="/calc_info/angle_controller/pid_calc_info/p_term" color="#ff7f0e"/>
@@ -27,19 +27,19 @@
   </Tab>
   <Tab containers="1" tab_name="velocity_controller">
    <Container>
-    <DockSplitter sizes="0.5;0.5" count="2" orientation="-">
+    <DockSplitter orientation="-" count="2" sizes="0.50055;0.49945">
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="6.268991" top="6.299462" right="1733355003.215809" left="1733354983.215985"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-7.487046" top="7.413526" left="1733389311.853485" right="1733389331.843446"/>
        <limitY/>
        <curve name="/calc_info/velocity_controller/target_velocity" color="#1f77b4"/>
        <curve name="/calc_info/velocity_controller/now_velocity" color="#d62728"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="-1.500000" top="1.500000" right="1733355003.215809" left="1733354983.215985"/>
-       <limitY min="-1.5" max="1.5"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-1.000000" top="1.000000" left="1733389311.853485" right="1733389331.843446"/>
+       <limitY min="-1" max="1"/>
        <curve name="/calc_info/velocity_controller/pid_calc_info/output" color="#1ac938"/>
        <curve name="/calc_info/velocity_controller/pid_calc_info/p_term" color="#ff7f0e"/>
        <curve name="/calc_info/velocity_controller/pid_calc_info/i_term" color="#f14cc1"/>
@@ -53,18 +53,18 @@
   </Tab>
   <Tab containers="1" tab_name="angle_velocity_controller">
    <Container>
-    <DockSplitter sizes="0.5;0.5" count="2" orientation="-">
+    <DockSplitter orientation="-" count="2" sizes="0.50055;0.49945">
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="7.794482" top="9.535596" right="1733354974.456184" left="1733354954.456404"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-3.298672" top="3.298672" left="1733389172.805785" right="1733389192.803717"/>
        <limitY/>
        <curve name="/calc_info/angle_velocity_controller/now_angle" color="#1f77b4"/>
        <curve name="/calc_info/angle_velocity_controller/target_angle" color="#d62728"/>
       </plot>
      </DockArea>
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="-8.218583" top="6.960008" right="1733354974.456184" left="1733354954.456404"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-2.491802" top="2.365364" left="1733389172.805785" right="1733389192.803717"/>
        <limitY/>
        <curve name="/calc_info/angle_velocity_controller/pid_calc_info/output" color="#1ac938"/>
        <curve name="/calc_info/angle_velocity_controller/pid_calc_info/p_term" color="#ff7f0e"/>
@@ -77,10 +77,10 @@
   </Tab>
   <Tab containers="1" tab_name="now_angle">
    <Container>
-    <DockSplitter sizes="1" count="1" orientation="-">
+    <DockSplitter orientation="-" count="1" sizes="1">
      <DockArea name="...">
-      <plot mode="TimeSeries" flip_x="false" style="Lines" flip_y="false">
-       <range bottom="125.442432" top="190.491162" right="1733355003.215878" left="1733354993.355816"/>
+      <plot flip_y="false" flip_x="false" mode="TimeSeries" style="Lines">
+       <range bottom="-27.742379" top="-15.319742" left="1733389311.843984" right="1733389331.843498"/>
        <limitY/>
        <curve name="/now_angle/angle" color="#1f77b4"/>
       </plot>
@@ -88,7 +88,7 @@
     </DockSplitter>
    </Container>
   </Tab>
-  <currentTabIndex index="3"/>
+  <currentTabIndex index="1"/>
  </tabbed_widget>
  <use_relative_time_offset enabled="0"/>
  <!-- - - - - - - - - - - - - - - -->
@@ -113,7 +113,7 @@
    <max_array_size value="50"/>
    <boolean_strings_to_number value="true"/>
    <remove_suffix_from_strings value="true"/>
-   <selected_topics value="/calc_info/angle_controller;/calc_info/angle_velocity_controller;/calc_info/velocity_controller;/target/angle;/target/angle_velocity;/target/velocity;/now_angle"/>
+   <selected_topics value="/calc_info/angle_controller;/calc_info/angle_velocity_controller;/calc_info/velocity_controller;/now_angle;/target/angle;/target/angle_velocity;/target/velocity"/>
   </plugin>
   <plugin ID="UDP Server"/>
   <plugin ID="WebSocket Server"/>

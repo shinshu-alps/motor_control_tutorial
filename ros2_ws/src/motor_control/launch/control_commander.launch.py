@@ -11,7 +11,8 @@ def generate_launch_description():
     param_config = os.path.join(
         get_package_share_directory("motor_control"),
         "param_cfg",
-        "control_commander.yaml",
+        # "control_commander.yaml",
+        "control_commander_answer.yaml",
     )
 
     return launch.LaunchDescription(
