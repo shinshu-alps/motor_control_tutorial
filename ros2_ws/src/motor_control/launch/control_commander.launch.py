@@ -20,6 +20,10 @@ def generate_launch_description():
                 package="motor_control",
                 executable="control_commander",
                 parameters=[param_config],
-            )
+            ),
+            launch_ros.actions.Node(
+                package="joy",
+                executable="joy_node",
+            ),
         ]
     )

@@ -1,5 +1,6 @@
 #include "alps_cmn/util/angle.hpp"
 #include "alps_ros2/type/custom_type_param_conversion_rule.hpp"
+#include "alps_ros2/ui/joy.hpp"
 #include "alps_ros2/util/typed_param.hpp"
 #include "motor_control/ctrl_mode.hpp"
 #include "motor_control_interfaces/msg/control_target.hpp"
@@ -64,17 +65,13 @@ public:
     param_target_velocity_.RegisterOnChangeCallback(
       [this](const double & value) { CbTargetVelocityChanged(value); });
 
-    // 目標値初期化
-    msg_target_angle_.target = 0.0;
-    msg_target_velocity_.target = 0.0;
-    msg_target_angle_velocity_.target = 0.0;
-
     RCLCPP_INFO(this->get_logger(), "Start ControlCommander");
   }
 
 private:
   void CbTimer()
   {
+    // 制御モード取得
     auto ctrl_mode_flag = param_ctrl_mode_flag_.GetParam().value();
     int selected_mode_num = 0;
     if (ctrl_mode_flag.angle_mode) {
@@ -98,15 +95,24 @@ private:
       now_mode_ = CtrlMode::kNone;
     }
 
+    // ジョイスティック入力取得
+    float axis = joy_.GetAxisState(alps::ros2::ui::Joy::Axis::kStickRX);
+    bool has_joystick_input = std::abs(axis) > kMinAxisInput;
+
+    // 制御指令値送信
+    motor_control_interfaces::msg::ControlTarget msg;
     switch (now_mode_) {
       case CtrlMode::kAngle:
-        pub_target_angle_->publish(msg_target_angle_);
+        msg.target = has_joystick_input ? axis * M_PI : target_angle_;
+        pub_target_angle_->publish(msg);
         break;
       case CtrlMode::kVelocity:
-        pub_target_velocity_->publish(msg_target_velocity_);
+        msg.target = has_joystick_input ? axis * 2 * M_PI : target_velocity_;
+        pub_target_velocity_->publish(msg);
         break;
       case CtrlMode::kAngleVelocity:
-        pub_target_angle_velocity_->publish(msg_target_angle_velocity_);
+        msg.target = has_joystick_input ? axis * M_PI : target_angle_;
+        pub_target_angle_velocity_->publish(msg);
         break;
       default:
         break;
@@ -121,8 +127,7 @@ private:
       "target_angle: %f [deg] (= %f [rad])",
       target_angle_deg,
       target_angle_rad);
-    msg_target_angle_.target = target_angle_rad;
-    msg_target_angle_velocity_.target = target_angle_rad;
+    target_angle_ = target_angle_rad;
   }
 
   void CbTargetVelocityChanged(const double & target_velocity_deg)
@@ -133,21 +138,23 @@ private:
       "target_velocity: %f [deg/s] (= %f [rad/s])",
       target_velocity_deg,
       target_velocity_rad);
-    msg_target_velocity_.target = target_velocity_rad;
+    target_velocity_ = target_velocity_rad;
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
 
   CtrlMode now_mode_ = CtrlMode::kNone;
 
-  motor_control_interfaces::msg::ControlTarget msg_target_angle_;
-  motor_control_interfaces::msg::ControlTarget msg_target_velocity_;
-  motor_control_interfaces::msg::ControlTarget msg_target_angle_velocity_;
+  float target_angle_ = 0.0;
+  float target_velocity_ = 0.0;
 
   rclcpp::Publisher<motor_control_interfaces::msg::ControlTarget>::SharedPtr pub_target_angle_;
   rclcpp::Publisher<motor_control_interfaces::msg::ControlTarget>::SharedPtr pub_target_velocity_;
   rclcpp::Publisher<motor_control_interfaces::msg::ControlTarget>::SharedPtr
     pub_target_angle_velocity_;
+
+  alps::ros2::ui::Joy joy_{*this, "joy"};
+  static constexpr float kMinAxisInput = 0.08;
 
   alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_controller_{
     *this, "angle_controller_param"};
