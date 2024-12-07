@@ -8,6 +8,22 @@
 
 モーター制御チュートリアル用リポジトリ  
 
+![demo_image](demo.gif)
+
+## 起動方法
+
+### シミュレーション
+
+```bash
+ros2 launch motor_control launch_all.launch.py
+```
+
+### 実機
+
+```bash
+ros2 launch motor_control launch_all.launch.py sim:=false
+```
+
 ## クローン
 
 sshでクローンする．またサブモジュールを含めるため`--recurse-submodules`オプションを付ける．
@@ -56,18 +72,4 @@ motor_control_tutorial/
         ├── behaviortree_ros2       - BehaviorTree.CPPのROS2パッケージ
         ├── cpp_pubsub
         └── sample_ros2_pkgs        - サンプルコード置き場(シンボリックリンク)
-```
-
-## 起動方法
-
-### シミュレーション
-
-```bash
-ros2 launch motor_control launch_all.launch.py
-```
-
-### 実機
-
-```bash
-ros2 launch motor_control launch_all.launch.py sim:=false
 ```
