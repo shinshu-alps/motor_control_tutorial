@@ -2,7 +2,7 @@ import launch
 import launch_ros.actions
 from launch.conditions import IfCondition, UnlessCondition
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():

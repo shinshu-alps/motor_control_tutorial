@@ -31,8 +31,8 @@ public:
       [this](const alps::cmn::control::MotorAngleControllerParam & value) {
         RCLCPP_INFO(
           this->get_logger(),
-          "angle_controller_param: pid{kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, drive_ratio_limit{%f, "
-          "%f}, angle_limit{%5f, %5f}",
+          "angle_controller_param: pid{kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, "
+          "drive_ratio_limit{%.4g, %.4g}, angle_limit{%.4g, %.4g}",
           value.pid_param.kp,
           value.pid_param.ki,
           value.pid_param.kd,
@@ -46,25 +46,34 @@ public:
       [this](const alps::cmn::control::MotorVelocityControllerParam & value) {
         RCLCPP_INFO(
           this->get_logger(),
-          "velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f, "
-          "kff_velocity=%f, kff_acceleration=%f, target_acceleration_lpf_time_const=%f",
+          "velocity_controller_param: pid_param: {kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, "
+          "kff_velocity=%f, kff_acceleration=%f, drive_ratio_limit={%.4g, %.4g}, "
+          "velocity_limit={%.4g, %.4g}, "
+          "target_acceleration_lpf_t=%f",
           value.pid_param.kp,
           value.pid_param.ki,
           value.pid_param.kd,
           value.pid_param.diff_lpf_time_const.count(),
           value.kff_velocity,
           value.kff_acceleration,
+          value.drive_ratio_limit.lowest,
+          value.drive_ratio_limit.max,
+          value.velocity_limit.lowest,
+          value.velocity_limit.max,
           value.target_acceleration_lpf_time_const.count());
       });
     param_angle_velocity_controller_.RegisterOnChangeCallback(
-      [this](const alps::cmn::control::PidParam & value) {
+      [this](const alps::cmn::control::MotorAngleVelocityControllerParam & value) {
         RCLCPP_INFO(
           this->get_logger(),
-          "angle_velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f",
-          value.kp,
-          value.ki,
-          value.kd,
-          value.diff_lpf_time_const.count());
+          "angle_velocity_controller_param: pid_param: {kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, "
+          "angle_limit: {%.4g, %.4g}",
+          value.pid_param.kp,
+          value.pid_param.ki,
+          value.pid_param.kd,
+          value.pid_param.diff_lpf_time_const.count(),
+          value.angle_limit.lowest,
+          value.angle_limit.max);
       });
 
     param_target_angle_.RegisterOnChangeCallback(
@@ -167,8 +176,8 @@ private:
     param_angle_controller_{*this, "angle_controller_param"};
   alps::ros2::util::TypedParamServer<alps::cmn::control::MotorVelocityControllerParam>
     param_velocity_controller_{*this, "velocity_controller_param"};
-  alps::ros2::util::TypedParamServer<alps::cmn::control::PidParam> param_angle_velocity_controller_{
-    *this, "angle_velocity_controller_param"};
+  alps::ros2::util::TypedParamServer<alps::cmn::control::MotorAngleVelocityControllerParam>
+    param_angle_velocity_controller_{*this, "angle_velocity_controller_param"};
 
   alps::ros2::util::TypedParamServer<CtrlModeFlag> param_ctrl_mode_flag_{*this, "ctrl_mode_flag"};
 

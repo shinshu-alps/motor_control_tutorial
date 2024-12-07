@@ -77,46 +77,16 @@ public:
     // パラメータコールバックの登録
     param_angle_controller_.RegisterOnChangeCallback(
       [this](const alps::cmn::control::MotorAngleControllerParam & value) {
-        RCLCPP_INFO(
-          this->get_logger(),
-          "angle_controller_param: {kp=%f, ki=%f, kd=%f, diff_lpf_t=%f}, drive_ratio_limit: {%f, "
-          "%f}, angle_limit: {%f, %f}",
-          value.pid_param.kp,
-          value.pid_param.ki,
-          value.pid_param.kd,
-          value.pid_param.diff_lpf_time_const.count(),
-          value.drive_ratio_limit.lowest,
-          value.drive_ratio_limit.max,
-          value.angle_limit.lowest,
-          value.angle_limit.max);
         angle_controller.SetParam(value);
         angle_controller.Reset();
       });
     param_velocity_controller_.RegisterOnChangeCallback(
       [this](const alps::cmn::control::MotorVelocityControllerParam & value) {
-        RCLCPP_INFO(
-          this->get_logger(),
-          "velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f, "
-          "kff_velocity=%f, kff_acceleration=%f, target_acceleration_lpf_time_const=%f",
-          value.pid_param.kp,
-          value.pid_param.ki,
-          value.pid_param.kd,
-          value.pid_param.diff_lpf_time_const.count(),
-          value.kff_velocity,
-          value.kff_acceleration,
-          value.target_acceleration_lpf_time_const.count());
         velocity_controller.SetParam(value);
         velocity_controller.Reset();
       });
     param_angle_velocity_controller_.RegisterOnChangeCallback(
-      [this](const alps::cmn::control::PidParam & value) {
-        RCLCPP_INFO(
-          this->get_logger(),
-          "angle_velocity_controller_param: kp=%f, ki=%f, kd=%f, diff_lpf_time_const=%f",
-          value.kp,
-          value.ki,
-          value.kd,
-          value.diff_lpf_time_const.count());
+      [this](const alps::cmn::control::MotorAngleVelocityControllerParam & value) {
         angle_velocity_controller.SetParam(value);
         angle_velocity_controller.Reset();
       });
@@ -186,8 +156,8 @@ private:
     param_angle_controller_{*this, "control_commander", "angle_controller_param"};
   alps::ros2::util::TypedParamClient<alps::cmn::control::MotorVelocityControllerParam>
     param_velocity_controller_{*this, "control_commander", "velocity_controller_param"};
-  alps::ros2::util::TypedParamClient<alps::cmn::control::PidParam> param_angle_velocity_controller_{
-    *this, "control_commander", "angle_velocity_controller_param"};
+  alps::ros2::util::TypedParamClient<alps::cmn::control::MotorAngleVelocityControllerParam>
+    param_angle_velocity_controller_{*this, "control_commander", "angle_velocity_controller_param"};
 
   // 仮想モーター
   VirtualMotor motor_{
@@ -215,7 +185,8 @@ private:
     motor_, motor_, alps::cmn::control::MotorAngleControllerParam{}};
   MotorVelocityController velocity_controller{
     motor_, motor_, alps::cmn::control::MotorVelocityControllerParam{}};
-  MotorAngleVelocityController angle_velocity_controller{alps::cmn::control::PidParam{}};
+  MotorAngleVelocityController angle_velocity_controller{
+    alps::cmn::control::MotorAngleVelocityControllerParam{}};
 
   // 目標値
   ControlTarget angle_ctrl_target_;

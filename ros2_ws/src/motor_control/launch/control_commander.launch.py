@@ -1,7 +1,8 @@
 import launch
 import launch_ros.actions
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from distutils.util import strtobool
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -11,8 +12,7 @@ def generate_launch_description():
     param_config = os.path.join(
         get_package_share_directory("motor_control"),
         "param_cfg",
-        # "control_commander.yaml",
-        "control_commander_answer.yaml",
+        "control_commander.yaml",
     )
 
     return launch.LaunchDescription(

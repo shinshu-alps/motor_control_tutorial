@@ -5,23 +5,27 @@
         lowest: -1.7976931348623157e+308
         max: 1.7976931348623157e+308
       drive_ratio_limit:
-        lowest: -1.0
-        max: 1.0
+        lowest: -0.5
+        max: 0.5
+      pid_param:
+        diff_lpf_time_const:
+          seconds: 0.004999999888241291
+        kd: 0.03
+        ki: 0.02
+        kp: 0.2
+    angle_velocity_controller_param:
+      angle_limit:
+        lowest: -3.4028234663852886e+38
+        max: 3.4028234663852886e+38
       pid_param:
         diff_lpf_time_const:
           seconds: 0.004999999888241291
         kd: 0.0
         ki: 0.0
-        kp: 0.0
-    angle_velocity_controller_param:
-      diff_lpf_time_const:
-        seconds: 0.004999999888241291
-      kd: 0.0
-      ki: 0.0
-      kp: 0.0
+        kp: 3.0
     ctrl_mode_flag:
       angle_mode: false
-      angle_velocity_mode: false
+      angle_velocity_mode: true
       velocity_mode: false
     qos_overrides:
       /parameter_events:
@@ -30,26 +34,26 @@
           durability: volatile
           history: keep_last
           reliability: reliable
-    target_angle_deg: 0.0
+    target_angle_deg: 176.0
     target_velocity_deg_per_sec: 0.0
     use_sim_time: false
     velocity_controller_param:
       drive_ratio_limit:
         lowest: -1.0
         max: 1.0
-      kff_acceleration: 0.0
+      kff_acceleration: 0.005
       kff_velocity: 0.0
       now_velocity_lpf_time_const:
         seconds: 0.05000000074505806
       pid_param:
         diff_lpf_time_const:
           seconds: 0.004999999888241291
-        kd: 0.0
-        ki: 0.0
-        kp: 0.0
+        kd: 0.003
+        ki: 0.05
+        kp: 0.01
       target_acceleration_lpf_time_const:
-        seconds: 0.05000000074505806
+        seconds: 0.2
       velocity_limit:
-        lowest: -3.4028234663852886e+38
-        max: 3.4028234663852886e+38
+        lowest: -3.14
+        max: 3.14
 

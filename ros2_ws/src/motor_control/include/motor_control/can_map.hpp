@@ -23,7 +23,7 @@ constexpr Id kIdNowAngle = 0x400;
 
 using AngleControllerParam = alps::cmn::control::MotorAngleControllerParam;
 using AngleControllerCalcInfo = alps::cmn::control::MotorAngleControllerCalcInfo;
-using AngleVelocityControllerParam = alps::cmn::control::PidParam;
+using AngleVelocityControllerParam = alps::cmn::control::MotorAngleVelocityControllerParam;
 
 using VelocityControllerParam = alps::cmn::control::MotorVelocityControllerParam;
 using VelocityControllerCalcInfo = alps::cmn::control::MotorVelocityControllerCalcInfo;
